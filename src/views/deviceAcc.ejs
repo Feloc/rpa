@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('partials/head') %>
+
+</head>
+<body>
+    <%- include('partials/navigation') %>
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div>
+                    <canvas id="chartAcc"></canvas>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                VALOR X
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="valueX" class="list-group-item text-center fw-semibold">0</li>
+                            </ul>
+                        </div>
+                    </div>               
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header text-center ">
+                                VALOR Y
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="valueY" class="list-group-item text-center fw-semibold">0</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                VALOR Z
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="valueZ" class="list-group-item text-center fw-semibold">0</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-8">
+                <div>
+                    <canvas id="chartGyr"></canvas>
+                </div> 
+            </div>
+            <div class="col-2">
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                VALOR X
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="valueGX" class="list-group-item text-center fw-semibold">0</li>
+                            </ul>
+                        </div>
+                    </div>               
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header text-center ">
+                                VALOR Y
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="valueGY" class="list-group-item text-center fw-semibold">0</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header text-center">
+                                VALOR Z
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li id="valueGZ" class="list-group-item text-center fw-semibold">0</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    
+        <div>
+            <p id="max"></p>
+        </div>
+    
+     
+    </div>
+    
+    
+    
+    
+
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %> 
+<script src="./deviceAcc.js"></script>
+
+</body>
+</html>
