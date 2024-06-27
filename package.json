@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.js --exec babel-node",
     "build": "babel src -d rpaP",
-    "start": "node rpaP"
+    "start": "node rpaP/index.js"
   },
   "keywords": [],
   "author": "",
