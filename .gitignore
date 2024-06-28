@@ -6,4 +6,11 @@ db
 
 .github
 
-rpaP
+package-lock.json
+
+tmp/
+
+temp/
+
+logs/
+*.log
