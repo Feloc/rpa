@@ -152,25 +152,17 @@ var notices = /*#__PURE__*/function () {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
           _context5.prev = 0;
-          if (_database.poolPC._connected) {
-            _context5.next = 5;
-            break;
-          }
-          console.log('NO CONNECTION');
-          //result = {recordset:[]}       
-          _context5.next = 12;
-          break;
-        case 5:
-          _context5.next = 7;
+          _context5.next = 3;
           return _database.poolPC.request().query(_database.queries.getEquipment);
-        case 7:
+        case 3:
           result = _context5.sent;
-          _context5.next = 10;
+          _context5.next = 6;
           return _database.poolPC.request().query(_database.queries.getNotices);
-        case 10:
+        case 6:
           result1 = _context5.sent;
           keys = Object.keys(result1.recordset.columns);
-        case 12:
+
+          //}
           console.log(result.recordset);
           unAcceptedNotices = result1.recordset.filter(function (item) {
             return item.status == 1;
@@ -180,19 +172,19 @@ var notices = /*#__PURE__*/function () {
             unAcceptedNotices: unAcceptedNotices,
             keys: keys
           });
-          _context5.next = 22;
+          _context5.next = 18;
           break;
-        case 17:
-          _context5.prev = 17;
+        case 13:
+          _context5.prev = 13;
           _context5.t0 = _context5["catch"](0);
-          console.error(_context5.t0);
+          console.error('Primer error', _context5.t0);
           res.status(500);
           res.send(_context5.t0.message);
-        case 22:
+        case 18:
         case "end":
           return _context5.stop();
       }
-    }, _callee5, null, [[0, 17]]);
+    }, _callee5, null, [[0, 13]]);
   }));
   return function notices(_x9, _x10) {
     return _ref5.apply(this, arguments);
