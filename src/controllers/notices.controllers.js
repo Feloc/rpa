@@ -92,6 +92,7 @@ export const notices = async (req, res) => {
     try {
         let result, result1
         let keys
+        console.log(poolPC);
         //if (!poolPC._connected) {
             //console.log('NO CONNECTION');
             //result = {recordset:[]}       
