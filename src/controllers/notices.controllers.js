@@ -92,10 +92,10 @@ export const notices = async (req, res) => {
     try {
         let result, result1
         let keys
-        if (!poolPC._connected) {
-            console.log('NO CONNECTION');
+        //if (!poolPC._connected) {
+            //console.log('NO CONNECTION');
             //result = {recordset:[]}       
-        }else{
+        //}else{
             result = await poolPC
             .request()
             .query(queries.getEquipment)
@@ -105,7 +105,7 @@ export const notices = async (req, res) => {
             .query(queries.getNotices)
             keys = Object.keys(result1.recordset.columns)
 
-        }
+        //}
         console.log(result.recordset);
 
         const unAcceptedNotices = result1.recordset.filter(item => (item.status == 1))
@@ -113,7 +113,7 @@ export const notices = async (req, res) => {
         res.render('notices', {data: result.recordset, unAcceptedNotices: unAcceptedNotices, keys:keys})
 
     } catch (error) {
-        console.error(error);
+        console.error('Primer error',error);
         res.status(500)
         res.send(error.message)        
     } 
