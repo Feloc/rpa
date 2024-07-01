@@ -43,6 +43,8 @@ app.use(_notices["default"]);
 //STATICS
 app.use(_express["default"]["static"](_path["default"].join(__dirname, 'public')));
 app.use('/uploads', _express["default"]["static"](_path["default"].join(__dirname, 'uploads')));
+
+//conectar la base de datos
 (0, _index.connectPoolPC)();
 console.log(_path["default"].join(__dirname, 'views'));
 console.log(__dirname);

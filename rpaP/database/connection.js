@@ -5,10 +5,7 @@ var _typeof = require("@babel/runtime/helpers/typeof");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.connectPoolPC = connectPoolPC;
-exports.createPool = createPool;
-exports.getConnection = getConnection;
-exports.poolPC = void 0;
+exports.poolPC = exports.connectPoolPC = void 0;
 Object.defineProperty(exports, "sql", {
   enumerable: true,
   get: function get() {
@@ -25,11 +22,24 @@ var dbsettings = {
   user: _config["default"].dbUser,
   password: _config["default"].dbPassword,
   server: _config["default"].dbServer,
+  port: parseInt(_config["default"].dbPort, 10) || 1433,
   database: _config["default"].dbDatabase,
   options: {
     encrypt: true,
     // // Si estás utilizando una conexión segura, asegúrate de habilitar la opción "encrypt"
-    trustServerCertificate: true // change to true for local dev / self-signed certs
+    trustServerCertificate: true,
+    // change to true for local dev / self-signed certs
+    connectionTimeout: 30000,
+    // Incrementa el tiempo de espera de conexión a 30 segundos
+    requestTimeout: 30000 //
+  },
+
+  pool: {
+    max: 10,
+    min: 0,
+    idleTimeoutMillis: 30000
+    //connectionTimeout: 30000, // Incrementa el tiempo de espera de conexión
+    //requestTimeout: 30000 // Incrementa el tiempo de espera de las solicitudes
   }
 };
 
@@ -39,89 +49,70 @@ poolDb.on('error', (err) => {
   console.error('Error en la conexión de la base de datos: ', err)
 }) */
 
-var poolPC = new _mssql.ConnectionPool(dbsettings);
+var poolPC;
 exports.poolPC = poolPC;
-function connectPoolPC() {
-  return _connectPoolPC.apply(this, arguments);
-}
-function _connectPoolPC() {
-  _connectPoolPC = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
+var connectPoolPC = /*#__PURE__*/function () {
+  var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee() {
     return _regenerator["default"].wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return poolPC.connect();
+          return new _mssql.ConnectionPool(dbsettings).connect();
         case 3:
+          exports.poolPC = poolPC = _context.sent;
           console.log('Conexión establecida correctamente PC');
-          _context.next = 9;
+          _context.next = 11;
           break;
-        case 6:
-          _context.prev = 6;
+        case 7:
+          _context.prev = 7;
           _context.t0 = _context["catch"](0);
           console.error('Error al conectar a la base de datos:', _context.t0);
-        case 9:
+          setTimeout(connectPoolPC, 5000); // Reintentar la conexión después de 5 segundos
+        case 11:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[0, 6]]);
+    }, _callee, null, [[0, 7]]);
   }));
-  return _connectPoolPC.apply(this, arguments);
+  return function connectPoolPC() {
+    return _ref.apply(this, arguments);
+  };
+}();
+
+/*export const poolPC = new ConnectionPool(dbsettings)
+
+ export async function connectPoolPC() {
+  try {
+    await poolPC.connect()
+    console.log('Conexión establecida correctamente PC');
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+  }
 }
-function createPool() {
-  return _createPool.apply(this, arguments);
+
+export async function createPool() {
+  try {
+    const pool = new ConnectionPool(dbsettings)
+    await pool.connect()
+    return pool
+  } catch (error) {
+    console.error(error);
+  }
+  
 }
-function _createPool() {
-  _createPool = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee2() {
-    var pool;
-    return _regenerator["default"].wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          _context2.prev = 0;
-          pool = new _mssql.ConnectionPool(dbsettings);
-          _context2.next = 4;
-          return pool.connect();
-        case 4:
-          return _context2.abrupt("return", pool);
-        case 7:
-          _context2.prev = 7;
-          _context2.t0 = _context2["catch"](0);
-          console.error(_context2.t0);
-        case 10:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2, null, [[0, 7]]);
-  }));
-  return _createPool.apply(this, arguments);
-}
-function getConnection() {
-  return _getConnection.apply(this, arguments);
-}
-function _getConnection() {
-  _getConnection = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3() {
-    var pool;
-    return _regenerator["default"].wrap(function _callee3$(_context3) {
-      while (1) switch (_context3.prev = _context3.next) {
-        case 0:
-          _context3.prev = 0;
-          _context3.next = 3;
-          return _mssql["default"].connect(dbsettings);
-        case 3:
-          pool = _context3.sent;
-          return _context3.abrupt("return", pool);
-        case 7:
-          _context3.prev = 7;
-          _context3.t0 = _context3["catch"](0);
-          console.error(_context3.t0);
-        case 10:
-        case "end":
-          return _context3.stop();
-      }
-    }, _callee3, null, [[0, 7]]);
-  }));
-  return _getConnection.apply(this, arguments);
-}
+
+
+export async function getConnection() {
+  try {
+    const pool = await sql.connect(dbsettings)
+    return pool  
+  } catch (error) {
+    console.error(error);
+  }
+  
+} */
+
 /*import { Connection } from "tedious";
 import { Request } from "tedious";
 
@@ -158,3 +149,4 @@ export function getConnectionSql(){
   });
   
 connectSql.connect()*/
+exports.connectPoolPC = connectPoolPC;
