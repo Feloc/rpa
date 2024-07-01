@@ -8,7 +8,7 @@ import { getUserByPassword } from "../services/userService.js";//solo si se util
 
 
 
-const poolPromise = createPool()
+//const poolPromise = createPool()
 
 
 
@@ -97,11 +97,13 @@ export const notices = async (req, res) => {
             //console.log('NO CONNECTION');
             //result = {recordset:[]}       
         //}else{
-            result = await poolPC
+            const pool = await poolPC
+            result = await pool
             .request()
             .query(queries.getEquipment)
 
-            result1 = await poolPC
+            const pool1 = await poolPC
+            result1 = await pool
             .request()
             .query(queries.getNotices)
             keys = Object.keys(result1.recordset.columns)
@@ -115,8 +117,7 @@ export const notices = async (req, res) => {
 
     } catch (error) {
         console.error('Primer error',error);
-        res.status(500)
-        res.send(error.message)        
+        res.status(500).send(error.message)        
     } 
 }
 

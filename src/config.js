@@ -8,6 +8,7 @@ export default {
     dbUser: process.env.DB_USER || '',
     dbPassword: process.env.DB_PASS || '',
     dbServer: process.env.DB_SERVER || '',
+    dbPort: process.env.DB_PORT || '',
     dbDatabase: process.env.DB_DATABASE || '',
 
     //telegram

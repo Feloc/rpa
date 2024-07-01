@@ -5,7 +5,7 @@ import clientMqtt from "../mqtt/connection.mqtt";
 import { MyMax, MyMin } from "../index.js";
 import bot_pmp, { chat_id } from "../telegram/bot.js";
 
-const poolPromise = createPool()
+//const poolPromise = createPool()
 
 /*io.on('message', (message)=>{
         //res.render('deviceTemp', {temp: message})//se pasa el archivo sin extension ejs

@@ -5,10 +5,16 @@ const dbsettings = {
   user : config.dbUser,
   password : config.dbPassword,
   server : config.dbServer,
+  port: parseInt(config.dbPort, 10) || 1433,
   database: config.dbDatabase,
   options: {
     encrypt: true, // // Si estás utilizando una conexión segura, asegúrate de habilitar la opción "encrypt"
-    trustServerCertificate: true // change to true for local dev / self-signed certs
+    trustServerCertificate: false // change to true for local dev / self-signed certs
+  },
+  pool:{
+    max: 10,
+    min:0,
+    idleTimeoutMillis: 30000
   }
 }
 
@@ -19,8 +25,22 @@ poolDb.on('error', (err) => {
   console.error('Error en la conexión de la base de datos: ', err)
 }) */
 
-export const poolPC = new ConnectionPool(dbsettings)
-export async function connectPoolPC() {
+let poolPC
+
+const connectPoolPC = async () => {
+  try {
+    poolPC = await new ConnectionPool(dbsettings).connect()
+    console.log('Conexión establecida correctamente PC');
+  } catch (error) {
+    console.error('Error al conectar a la base de datos:', error);
+    setTimeout(connectPoolPC, 5000); // Reintentar la conexión después de 5 segundos
+  }
+}
+
+
+/*export const poolPC = new ConnectionPool(dbsettings)
+
+ export async function connectPoolPC() {
   try {
     await poolPC.connect()
     console.log('Conexión establecida correctamente PC');
@@ -49,9 +69,9 @@ export async function getConnection() {
     console.error(error);
   }
   
-}
+} */
 
-export {sql}
+  export {poolPC, sql, connectPoolPC}
 
 
 
