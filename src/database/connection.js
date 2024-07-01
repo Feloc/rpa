@@ -9,12 +9,16 @@ const dbsettings = {
   database: config.dbDatabase,
   options: {
     encrypt: true, // // Si estás utilizando una conexión segura, asegúrate de habilitar la opción "encrypt"
-    trustServerCertificate: false // change to true for local dev / self-signed certs
+    trustServerCertificate: true, // change to true for local dev / self-signed certs
+    connectionTimeout: 30000, // Incrementa el tiempo de espera de conexión a 30 segundos
+    requestTimeout: 30000 //
   },
   pool:{
     max: 10,
     min:0,
-    idleTimeoutMillis: 30000
+    idleTimeoutMillis: 30000,
+    //connectionTimeout: 30000, // Incrementa el tiempo de espera de conexión
+    //requestTimeout: 30000 // Incrementa el tiempo de espera de las solicitudes
   }
 }
 
