@@ -3,6 +3,7 @@
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+var _axios = _interopRequireDefault(require("https://cdn.skypack.dev/axios"));
 console.log('noticess');
 function fetchData() {
   return _fetchData.apply(this, arguments);
@@ -22,7 +23,7 @@ function _fetchData() {
                   case 0:
                     _context.prev = 0;
                     _context.next = 3;
-                    return axios.get("/noticesUser_User/".concat(id_notice));
+                    return _axios["default"].get("/noticesUser_User/".concat(id_notice));
                   case 3:
                     response1 = _context.sent;
                     noticesUser_User = response1.data;
@@ -47,7 +48,7 @@ function _fetchData() {
             };
           }();
           _context2.next = 4;
-          return axios.get('/getNotices');
+          return _axios["default"].get('/getNotices');
         case 4:
           response = _context2.sent;
           noticesData = response.data;
