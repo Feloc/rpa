@@ -1,6 +1,6 @@
-import app from './app' 
+import app from './app.js' 
 import * as mqtt from 'async-mqtt'
-import clientMqtt, {connect} from './mqtt/connection.mqtt'
+import clientMqtt, {connect} from './mqtt/connection.mqtt.js'
 //import {createPool} from "./database/connection";// 20/01/24
 
 

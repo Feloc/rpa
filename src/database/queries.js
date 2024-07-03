@@ -1,5 +1,5 @@
-import { getEquipment } from "../controllers/equipment.controllers";
-import { getImages, uploadImages } from "../controllers/notices.controllers";
+import { getEquipment } from "../controllers/equipment.controllers.js";
+import { getImages, uploadImages } from "../controllers/notices.controllers.js";
 
 export const queries =  {
     getAllEquipments: 'SELECT * from tempTurb',

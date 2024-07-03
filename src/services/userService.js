@@ -1,4 +1,6 @@
-import { sql, queries, poolPC } from "../database";
+import { sql, poolPC } from "../database/connection.js";
+import {queries} from "../database/queries.js"
+
 import bcrypt from "bcrypt";
 
 

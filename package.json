@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js --exec babel-node",
     "build": "babel src -d rpaP && copyfiles -u 1 src/views/** rpaP && copyfiles -u 2 src/public/img/** rpaP/public",
-    "start": "node rpaP/index.js"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "",

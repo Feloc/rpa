@@ -1,5 +1,5 @@
 import { Router } from "express"; 
-import { accelerometerChart, deviceAccGetChart, getAccelerometerChart, getTemperature, getTemperatureChart, insertTemperature, temperatureChart } from "../controllers/device.controller";
+import { accelerometerChart, deviceAccGetChart, getAccelerometerChart, getTemperature, getTemperatureChart, insertTemperature, temperatureChart } from "../controllers/device.controller.js";
 
 
 const router = Router()

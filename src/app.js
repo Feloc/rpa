@@ -6,18 +6,18 @@ import { fileURLToPath } from 'url';
 import multer from 'multer';
 import sharp from 'sharp';
 
-import config from "./config";
-import { connectPoolPC } from "./database/index";
-import indexRoutes from './routes/index.routes'
-import equipmentRoutes from './routes/equipment.routes'
-import deviceRoutes from './routes/device.routes'
-import noticesRoutes from './routes/notices.routes'
+import config from "./config.js";
+import { connectPoolPC } from "./database/index.js";
+import indexRoutes from './routes/index.routes.js'
+import equipmentRoutes from './routes/equipment.routes.js'
+import deviceRoutes from './routes/device.routes.js'
+import noticesRoutes from './routes/notices.routes.js'
 
 const app = express()
 
 
-//const __filename = fileURLToPath()//(import.meta.url);
-//const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 

@@ -1,5 +1,6 @@
-import sql, {ConnectionPool} from "mssql";
-import config from '../config'
+import sql from "mssql";
+//import sql, {ConnectionPool} from "mssql";
+import config from '../config.js'
 
 const dbsettings = {
   user : config.dbUser,
@@ -33,7 +34,7 @@ let poolPC
 
 const connectPoolPC = async () => {
   try {
-    poolPC = await new ConnectionPool(dbsettings).connect()
+    poolPC = await new sql.ConnectionPool(dbsettings).connect()
     console.log('Conexión establecida correctamente PC');
   } catch (error) {
     console.error('Error al conectar a la base de datos:', error);

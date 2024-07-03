@@ -1,9 +1,10 @@
 import { json } from "express";
-import { getConnection, sql, queries, createPool } from "../database";
-import clientMqtt from "../mqtt/connection.mqtt";
+import { sql } from "../database/connection.js";
+import {queries} from "../database/queries.js"
+import clientMqtt from "../mqtt/connection.mqtt.js";
 //import { ser } from "socket.io";
 import { MyMax, MyMin } from "../index.js";
-import bot_pmp, { chat_id } from "../telegram/bot.js";
+//import bot_pmp, { chat_id } from "../telegram/bot.js";
 
 //const poolPromise = createPool()
 

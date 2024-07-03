@@ -1,12 +1,15 @@
 import axios from "axios";
-import { sql, queries, createPool, poolPC } from "../database";
+import { sql, poolPC } from "../database/connection.js";
+import {queries} from "../database/queries.js"
 import sharp from 'sharp';
 import path from "path";
 import { validationResult, query } from "express-validator";
 import { format, parseISO, addDays } from "date-fns";
 import { getUserByPassword } from "../services/userService.js";//solo si se utiliza el servicio de validacion   
 
-
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 //const poolPromise = createPool()
 
