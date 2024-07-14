@@ -57,7 +57,7 @@
                           <h5 class="card-title"><%=notice[0].machine%></h5>
                           <p class="card-text"></p>
                           <p class="card-text"><small class="text-body-secondary"><%=notice[0].technician%></small></p>
-                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].starttime.toLocaleString()%></small></p>
+                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].starttime ? notice[0].starttime.toLocaleString() : ''%></small></p>
                           <p class="card-text"><small class="text-body-secondary"><%=notice[0].endtime ? notice[0].endtime.toLocaleString() : ''%></small></p>
                           <p class="card-text"><small class="text-body-secondary"><%=notice[0].endtime ? ((new Date(notice[0].endtime)-new Date(notice[0].starttime))/(1000*60)).toFixed(0) + ' Min' : ''%></small></p>
                         </div>

@@ -53,42 +53,46 @@
                 </div>
             </div> 
             <div class="row">
-              <table class="table table-striped table-sm">
+              <div class="table-responsive">
+                <table class="table table-striped table-sm">
                   <thead>
                     <tr>  
                       <th>#</th>  
                       <th>Equipo</th>  
                       <th>Novedad</th>  
                       <th>Hora registro</th>  
-                      <th>Parada</th>
+                      <!-- <th class="d-none d-lg-block">Parada</th> -->
                     </tr>
                   </thead>
                   <tbody>
                      <% unAcceptedNotices.map(notice => {%>                     
-                    <tr>
-                        <td> <%=notice.id%> </td>                                                                                                                        
-                        <td> <%=notice.machine%> </td>                                                                       
-                        <td> <%=notice.message%> </td>                                                                       
-                        <td> <%=notice.regtime ? notice.regtime.toLocaleString() : ''%> </td>
-                        <td>
-                          <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
-                            <label class="form-check-label" for="flexSwitchCheckDefault"></label>
-                          </div>
-                        </td> 
-                        <form id="acceptForm<%=notice.id%>" action="/acceptNotice/<%=notice.id%>" method="post">
-                          <td>
-                            <label  class="visually-hidden">Novedad</label>
-                            <input type="password" class="form-control" placeholder="contraseña" required name="pass" id="pass-<%=notice.id%>">
-                          </td>
-                          <td class="col-2">
-                            <button class="btn btn-secondary rounded-2">Aceptar</button>                         
-                          </td>
-                        </form>                                                                                                                                             
+                    <tr>                                                                                                                        
+                      <td> <a href="/noticesDetail/<%=notice.id%>" class="btn btn-secondary rounded-2"> <%=notice.id%></a> </td>                                                                                                                                                 
+                      <td> <%=notice.machine%> </td>                                                                       
+                      <td> <%=notice.message%> </td>                                                                       
+                      <td> <%=notice.regtime ? notice.regtime.toLocaleString() : ''%> </td>
+                      <!-- <td class="d-none d-lg-block">
+                        <div class="form-check form-switch">
+                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                          <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                        </div>
+                      </td> --> 
+                      <td>
+                      <form id="acceptForm<%=notice.id%>" action="/acceptNotice/<%=notice.id%>" method="post">
+                        
+                          <label  class="visually-hidden">Novedad</label>
+                          <input type="password" class="form-control" placeholder="contraseña" required name="pass" id="pass-<%=notice.id%>">
+                        
+
+                          <button class="btn btn-secondary rounded-2">Aceptar</button>                         
+                        
+                      </form> 
+                    </td>                                                                                                                                            
                     </tr>
                     <% })%>                  
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
           </div> 
           <div id="table-container" class="row">
               

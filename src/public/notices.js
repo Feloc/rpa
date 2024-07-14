@@ -26,46 +26,48 @@ async function fetchData() {
     const badges = await Promise.all(acceptedNotices.map(item => badge(item.id)));
     
     const tableHTML = `
-      <table class="table table-striped table-sm">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Equipo</th>
-            <th>Novedad</th>
-            <th>Hora registro</th>
-            <th>Hora inicio</th>
-            <th>Técnico</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${acceptedNotices.map((item, index) => `
+      <div class="table-responsive">
+        <table class="table table-striped table-sm">
+          <thead>
             <tr>
-              <td>
-                <a href="/noticesDetail/${item.id}" class="btn btn-secondary rounded-2">${item.id}</a>                                                   
-              </td>
-              <td>${item.machine}</td>
-              <td>${item.message}</td>
-              <td>${item.regtime}</td>
-              <td>${item.starttime}</td>
-              <td>${item.technician}</td>
-              <td> <!-- Se abre una celda para el formulario -->
-                <form id="addUserNoticeForm${item.id}" action="/addUserNotice/${item.id}" method="post">
-                  <label class="visually-hidden">Novedad</label>
-                  <input type="password" class="form-control" placeholder="+" required name="pass" id="pass-${item.id}">
-                  <button type="submit" class="btn btn-secondary rounded-2"> + <span class="badge text-bg-warning">${badges[index]}</span></button>  
-                </form>
-              </td>
-              <td> <!-- Se abre una celda para el formulario -->
-                <form id="closeForm${item.id}" action="/closeNotice/${item.id}" method="post">
-                  <label class="visually-hidden">Novedad</label>
-                  <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description-${item.id}">
-                  <button type="submit" class="btn btn-secondary rounded-2">Cerrar</button>  
-                </form>
-              </td>
+              <th>#</th>
+              <th>Equipo</th>
+              <th>Novedad</th>
+              <th class="d-none d-lg-block">Hora registro</th>
+              <th class="d-none d-lg-block">Hora inicio</th>
+              <th>Técnico</th>
             </tr>
-          `).join('')}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            ${acceptedNotices.map((item, index) => `
+              <tr>
+                <td>
+                  <a href="/noticesDetail/${item.id}" class="btn btn-secondary rounded-2">${item.id}</a>
+                </td>
+                <td>${item.machine}</td>
+                <td>${item.message}</td>
+                <td class="d-none d-lg-block">${item.regtime}</td>
+                <td class="d-none d-lg-block">${item.starttime}</td>
+                <td>${item.technician}</td>
+                <td>
+                  <form id="addUserNoticeForm${item.id}" action="/addUserNotice/${item.id}" method="post">
+                    <label class="visually-hidden">Novedad</label>
+                    <input type="password" class="form-control" placeholder="+" required name="pass" id="pass-${item.id}">
+                    <button type="submit" class="btn btn-secondary rounded-2"> + <span class="badge text-bg-warning">${badges[index]}</span></button>
+                  </form>
+                </td>
+                <td class="d-none d-lg-block">
+                  <form id="closeForm${item.id}" action="/closeNotice/${item.id}" method="post">
+                    <label class="visually-hidden">Novedad</label>
+                    <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description-${item.id}">
+                    <button type="submit" class="btn btn-secondary rounded-2">Cerrar</button>
+                  </form>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
     `;
 
     // Inject table into HTML
