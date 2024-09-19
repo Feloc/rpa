@@ -33,9 +33,11 @@ async function fetchData() {
               <th>#</th>
               <th>Equipo</th>
               <th>Novedad</th>
-              <th class="d-none d-lg-block">Hora registro</th>
-              <th class="d-none d-lg-block">Hora inicio</th>
+              <th class="d-none d-lg-table-cell">Hora registro</th>
+              <th class="d-none d-lg-table-cell">Hora inicio</th>
               <th>Técnico</th>
+              <th>+</th>
+              <th class="d-none d-lg-table-cell">Descripción</th>
             </tr>
           </thead>
           <tbody>
@@ -46,8 +48,8 @@ async function fetchData() {
                 </td>
                 <td>${item.machine}</td>
                 <td>${item.message}</td>
-                <td class="d-none d-lg-block">${item.regtime}</td>
-                <td class="d-none d-lg-block">${item.starttime}</td>
+                <td class="d-none d-lg-table-cell">${item.regtime}</td>
+                <td class="d-none d-lg-table-cell">${item.starttime}</td>
                 <td>${item.technician}</td>
                 <td>
                   <form id="addUserNoticeForm${item.id}" action="/addUserNotice/${item.id}" method="post">
@@ -56,7 +58,7 @@ async function fetchData() {
                     <button type="submit" class="btn btn-secondary rounded-2"> + <span class="badge text-bg-warning">${badges[index]}</span></button>
                   </form>
                 </td>
-                <td class="d-none d-lg-block">
+                <td class="d-none d-lg-table-cell">
                   <form id="closeForm${item.id}" action="/closeNotice/${item.id}" method="post">
                     <label class="visually-hidden">Novedad</label>
                     <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description-${item.id}">
