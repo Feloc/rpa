@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('partials/head') %>
+
+</head>
+<body>
+    <%- include('partials/navigation') %>
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card">
+                                <div class="card-header text-center">
+                                    TEMPERATURA
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li id="thx3" class="list-group-item text-center fw-semibold">0</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            TEMPERATURA MAX
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li id="tMaxima" class="list-group-item text-center fw-semibold">0</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-8">
+                    <div>
+                        <canvas id="tempTurbine"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table">
+                <thead>
+                  <tr>
+                    <% data1.forEach(key => { %>
+                        <th scope="col"> <%= key %> </th>
+                    <% }) %>
+                  </tr>
+                </thead>
+                <tbody>
+                    <% data.forEach ( (data) => { %>
+                    <tr>
+                        <% data1.forEach(key => { %>
+                        <td scope="col"> <%= data[key] %> </td>
+                        <%})%>
+                    </tr>
+                    <% } ) %>
+                  
+                </tbody>
+            </table>
+        </div>
+<%- include('partials/footer') %>
+<%- include('partials/scripts') %>
+<script src="./temperature.js"></script>
+
+
+</body>
+
+</html>

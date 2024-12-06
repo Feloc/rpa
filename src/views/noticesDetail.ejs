@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <%- include('partials/head') %>
+
+</head>
+<body>
+    <%- include('partials/navigation') %>
+
+    <div class="container">
+        <div class="row justify-content-between mb-3">
+            <!-- <div class="col">
+                <div class="card" style="width: 18rem;">
+                    <img src="/img/<%=notice[0].machine%>.png" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Aviso N° <%= notice[0].id%></h5>
+                        <h5 class="card-title"><%=notice[0].machine%></h5>
+                        <p class="card-text"><%=notice[0].message%></p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><%=notice[0].technician%></li>
+                        <li class="list-group-item">A</li>
+                        <li class="list-group-item">A third item</li>
+                    </ul>
+                    <ul class="list-group list-group-flush">
+        
+                        <% noticeUserFId.map(noticeUser => { %>
+                        <li class="list-group-item"><%=noticeUser.name%></li>
+                        <li class="list-group-item">
+                            <form id="closeForm<%=noticeUser.id_notices_user%>" action="/exitUserNotice?id_notices_user=<%=noticeUser.id_notices_user%>&id_notice=<%=noticeUser.id%>&user_id=<%=noticeUser.user_id%>" method="post">
+                                <label class="visually-hidden">Novedad</label>
+                                <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description">
+                                <button type="submit" class="btn btn-secondary rounded-2">Salir</button>  
+                            </form>
+                        </li>
+                       <% }) %>
+                    </ul>
+                    <div class="card-body">
+                        <a href="#" class="card-link">Card link</a>
+                        <a href="#" class="card-link">Another link</a>
+                    </div>
+                </div>
+            </div> -->
+            <div class="col-md-6">
+                <div class="card mb-3" >
+                    <div class="row g-0">
+                      <div class="col-md-4">
+                        <img src="/img/<%=notice[0].machine%>.png" class="img-fluid rounded-start" alt="...">
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title">Aviso N° <%= notice[0].id%></h5>
+                          <h5 class="card-title"><%=notice[0].machine%></h5>
+                          <p class="card-text"></p>
+                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].technician%></small></p>
+                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].starttime ? notice[0].starttime.toLocaleString() : ''%></small></p>
+                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].endtime ? notice[0].endtime.toLocaleString() : ''%></small></p>
+                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].endtime ? ((new Date(notice[0].endtime)-new Date(notice[0].starttime))/(1000*60)).toFixed(0) + ' Min' : ''%></small></p>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="mb-3" style="max-width: 640px">
+                    <div class="card">
+                        <div class="card-header">
+                            Aviso
+                        </div>
+                        <div class="card-body">
+                            <%=notice[0].message%>
+                        </div>
+                    </div>
+                </div> 
+                <div class="mb-3" style="max-width: 640px">
+                    <div class="card">
+                        <div class="card-header">
+                            Descripción detallada
+                        </div>
+                        <div class="card-body">
+                            <%=notice[0].detail%>
+                        </div>
+                    </div>
+                </div>
+                <%if(notice[0].status === 3) {%>
+                <div class="mb-5" style="max-width: 640px">
+                    <div class="card">
+                        <div class="card-header">
+                            Descripción
+                        </div>
+                        <div class="card-body">               
+                            <p class="card-text"><%=notice[0].description%></p>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                Editar
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="closeForm<%= notice[0].id%>" action="/updateNotice/<%= notice[0].id%>" method="post">
+                                                <label class="visually-hidden">Descripción</label>
+                                                <!-- <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description-${item.id}"> -->
+                                                <textarea class="form-control" aria-label="With textarea" placeholder="Descripción" required name="description" id="description"><%=notice[0].description%></textarea>
+                                                <button type="submit" class="btn btn-secondary rounded-2">Editar</button>  
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>    
+                <%}%>  
+                <%if(notice[0].status === 2) {%>
+                <div class="mb-5" style="max-width: 640px">
+                    <form id="closeForm<%= notice[0].id%>" action="/closeNotice/<%= notice[0].id%>" method="post">
+                        <label class="visually-hidden">Descripción</label>
+                        <!-- <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description"> -->
+                        <textarea class="form-control" aria-label="With textarea" placeholder="Descripción" required name="description" id="description"></textarea>
+                        <button type="submit" class="btn btn-secondary rounded-2">Cerrar</button>  
+                    </form>
+                </div> 
+                <%}%>               
+            </div>
+            <div class="col-md-4">
+                <div id="uploadContainer" data-id-notice="<%= notice[0].id %>">
+                    <form action="/upload" method="POST" enctype="multipart/form-data">
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" name="image" accept="image/*" required>
+                            <input type="hidden" id="id_notice" name="id_notice" value="<%= notice[0].id %>">
+                            <button type="submit" class="btn btn-secondary rounded-2">Cargar</button>
+                        </div>                   
+                    </form>
+                </div>
+                <div>
+                    <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner" id="carousel-inner">
+                          
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                          <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>               
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Entradas
+                    </div>
+                    <div id="cardcontainer">
+    
+                    </div>
+                </div>
+                
+            </div>
+            <div class="col">
+                <div class="card mb-3" style="width: 18rem;">
+                    <div class="card-header">
+                      Técnicos activos
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <% noticeUserFId.map(noticeUser => { %>
+                            <li class="list-group-item"><%=noticeUser.name%></li>
+                            <li class="list-group-item">
+                                <form id="closeForm<%=noticeUser.id_notices_user%>" action="/exitUserNotice?id_notices_user=<%=noticeUser.id_notices_user%>&id_notice=<%=noticeUser.id%>&user_id=<%=noticeUser.user_id%>" method="post">
+                                    <label class="visually-hidden">Novedad</label>
+                                    <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description">
+                                    <button type="submit" class="btn btn-secondary rounded-2">Salir</button>  
+                                </form>
+                            </li>
+                        <% }) %>
+                    </ul>
+                  </div>
+            </div>
+        </div>
+
+        
+    </div>
+    
+
+
+
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>   
+<script src="/noticesDetail.js" type="module"></script>
+
+</body>
+</html>
