@@ -8,41 +8,42 @@ import sharp from 'sharp';
 
 import config from "./config.js";
 import { connectPoolPC } from "./database/index.js";
-import noticesRoutes from './routes/notices.routes.js'
+import noticesRoutes from './routes/notices.routes.js';
+import performanceRoutes from './routes/performance.routes.js'
 
-const app = express()
-
+const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Settings
+app.set('views', path.join(__dirname, 'views')); // Configuración del directorio de vistas
+app.set('view engine', 'ejs'); // Configuración del motor de vistas
+app.set('port', config.port); // Configuración del puerto
 
+// Middleware
+app.use(express.json()); // Para recibir datos en formato JSON
+app.use(express.urlencoded({ extended: false })); // Para recibir datos desde formularios HTML
 
-//settings
-let port 
-app.set('views', path.join(__dirname, 'views'))//views
-app.set('view engine', 'ejs')//views
-app.set('port', config.port )
+// Rutas
+app.use(noticesRoutes);
+app.use(performanceRoutes)
 
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-//MIDDLEWARE
-app.use(express.json()) //recibir datos formato json
-app.use(express.urlencoded({extended: false}))//recibir datos que vengan desde formularios html PODER ENTENDER LO QUE EL CLIENTE ENVIA
-
-
-app.use(noticesRoutes)
-
-//STATICS
-app.use(express.static(path.join(__dirname, 'public')))
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
-
-//conectar la base de datos
+// Conectar a la base de datos
 connectPoolPC()
-
+  
+// Middleware de manejo de errores
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
 
 console.log(path.join(__dirname, 'views'));
-
 console.log(__dirname);
 console.log(__filename);
 
-export default app
+export default app;

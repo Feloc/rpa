@@ -14,6 +14,9 @@ const __dirname = path.dirname(__filename)
 //const poolPromise = createPool()
 
 
+export const index = (req, res)=>{
+    res.render('index',{title : "RAP"})
+}
 
 //User
 export const getUsers = async (req, res) => {
@@ -93,34 +96,23 @@ export const getNoticeById = async (req, res) => {
 export const notices = async (req, res) => {
 
     try {
-        let result, result1
-        let keys
-        console.log(poolPC);
-        //if (!poolPC._connected) {
-            //console.log('NO CONNECTION');
-            //result = {recordset:[]}       
-        //}else{
-            const pool = await poolPC
-            result = await pool
-            .request()
-            .query(queries.getEquipment)
+        const pool = await poolPC
+        const result = await pool
+        .request()
+        .query(queries.getEquipment)
 
-            const pool1 = await poolPC
-            result1 = await pool
-            .request()
-            .query(queries.getNotices)
-            keys = Object.keys(result1.recordset.columns)
-
-        //}
-        console.log(result.recordset);
+        const result1 = await pool
+        .request()
+        .query(queries.getNotices)
+        const keys = Object.keys(result1.recordset.columns)
 
         const unAcceptedNotices = result1.recordset.filter(item => (item.status == 1))
 
-        res.render('notices', {data: result.recordset, unAcceptedNotices: unAcceptedNotices, keys:keys})
+        res.render('notices', {data: result.recordset, unAcceptedNotices, keys})
 
     } catch (error) {
-        console.error('Primer error',error);
-        res.status(500).send(error.message)        
+        console.error('Error al obtener las notificaciones:', error);
+        res.status(500).send('Error al obtener las notificaciones');        
     } 
 }
 
@@ -134,7 +126,7 @@ export const createNotice = async (req, res) => {
         const user = await getUserByPassword(pass)
         console.log(user);
         if (!user) {
-            return res.render('error', { error: 'Invalid password.' })
+            return res.render('error', { error: 'Invalid password.' }) 
             /* return res.render('notices', {
                 data: [],
                 unAcceptedNotices: [], // Lista de avisos no aceptados
@@ -294,7 +286,7 @@ export const closeNotice = async (req, res) => {
         .input('id', sql.Int, id_notice)
         .input('status', sql.Int, notice_status)
         .input('endtime', sql.DateTime, endtime)
-        .input('description', sql.Text, description)
+        //.input('description', sql.Text, description)
         .query(queries.updateNoticeClosed) 
 
 
@@ -494,7 +486,86 @@ export const noticesDetail = async (req, res) => {
     }
 }
 
+
+// Validador para la búsqueda de historial de notificaciones
 export const noticesHistory = [
+    query('machine').optional().isString().trim().escape(),
+    query('message').optional().isString().trim().escape(),
+    query('technician').optional().isString().trim().escape(),
+    query('startDate').optional({ checkFalsy: true }).isISO8601(),
+    query('endDate').optional({ checkFalsy: true }).isISO8601(),
+
+    async (req, res) => {
+        // Manejo de errores de validación
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { machine, message, technician, startDate, endDate } = req.query;
+
+        let query = queries.getNoticesHistory;
+        const conditions = [];
+        const params = {};
+
+        if (machine) {
+            conditions.push('machine LIKE @machine');
+            params.machine = `%${machine}%`;
+        }
+        if (message) {
+            conditions.push('message LIKE @message');
+            params.message = `%${message}%`;
+        }
+        if (technician) {
+            conditions.push('technician LIKE @technician');
+            params.technician = `%${technician}%`;
+        }
+        if (startDate) {
+            const parsedStartDate = parseISO(startDate);
+            conditions.push('starttime >= @startDate');
+            params.startDate = parsedStartDate;
+        }
+        if (endDate) {
+            const parsedEndDate = addDays(parseISO(endDate), 1);
+            conditions.push('endtime <= @endDate');
+            params.endDate = parsedEndDate;
+        }
+
+        if (conditions.length > 0) {
+            query += ' AND ' + conditions.join(' AND ');
+        }
+
+        try {
+            const pool = await poolPC;
+            const request = pool.request();
+
+            Object.entries(params).forEach(([key, value]) => {
+                request.input(key, value);
+            });
+
+            const result = await request.query(query);
+
+            // Formatear fechas para el formulario
+            const formattedStartDate = startDate ? format(parseISO(startDate), 'yyyy-MM-dd') : '';
+            const formattedEndDate = endDate ? format(parseISO(endDate), 'yyyy-MM-dd') : '';
+
+            res.render('noticesHistory', {
+                noticesHistory: result.recordset,
+                machine,
+                message,
+                technician,
+                startDate: formattedStartDate,
+                endDate: formattedEndDate
+            });
+        } catch (error) {
+            console.error('Error al obtener el historial de notificaciones:', error);
+            res.status(500).send('Error al obtener el historial de notificaciones');
+        }
+    }
+];
+
+
+/* export const noticesHistory = [
 
     //validacion
     query('machine').optional().isString().trim().escape(),
@@ -544,10 +615,6 @@ export const noticesHistory = [
             query += ' AND ' + conditions.join(' AND ');
             console.log(query);
         }
-        /* if (conditions.length > 0) {
-            query += ' WHERE status = 3 AND ' + conditions.join(' AND ');
-            console.log(query);
-        } */
 
         console.log(conditions);
         console.log(params);
@@ -582,7 +649,7 @@ export const noticesHistory = [
             res.send(error.message)
         }
     }
-]
+] */
 
 
 //NoticeUser-----------------------------------

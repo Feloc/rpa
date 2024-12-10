@@ -34,7 +34,7 @@ export const queries =  {
     createNotice: 'INSERT INTO notices(status, machine, message, detail, regtime, requester) VALUES (@status, @machine, @message, @detail, @regtime, @requester)',
     updateNotice: 'UPDATE notices SET status = @status, starttime = @starttime, technician = @technician WHERE id = @id',
     updateNoticeDescription: 'UPDATE notices SET description = @description WHERE id = @id',
-    updateNoticeClosed: 'UPDATE notices SET status = @status, endtime = @endtime, description = @description WHERE id = @id',
+    updateNoticeClosed: 'UPDATE notices SET status = @status, endtime = @endtime WHERE id = @id',
 
     //NoticeUser
     insertNoticeUser: 'INSERT INTO notices_user(id_user, id_notice, starttime) VALUES (@id_user, @id_notice, @starttime)',
@@ -47,7 +47,21 @@ export const queries =  {
     //upload images
     //uploadImages: 'INSERT INTO images (id_notice, equipment, imagename, comment) VALUES (@id_notice, @equipment, @imagename, @comment)'
     uploadImages: 'INSERT INTO images (id_notice, imagename) VALUES (@id_notice, @imagename)',
-    getImages: 'SELECT * FROM images WHERE id_notice = @id_notice'
+    getImages: 'SELECT * FROM images WHERE id_notice = @id_notice',
+
+    //Performance
+    getPerformanceData: `
+        SELECT 
+            technician, 
+            COUNT(id) AS numNotices, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
+        FROM 
+            notices
+        WHERE 
+            status = 3
+        GROUP BY 
+            technician
+    `
 
 }
 

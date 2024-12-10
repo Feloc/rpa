@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { acceptNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getImages, getNotices, getUsers, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, updateNotice, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
+import { acceptNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getImages, getNotices, getUsers, index, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, updateNotice, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
 import multer from 'multer';
 import path from "path";
 import sharp from 'sharp';
@@ -20,6 +20,9 @@ const upload = multer({storage:multer.memoryStorage()})
 
 
 const router = Router()
+
+router.get('/', index)
+
 
 router.get('/getUsers', getUsers)
 router.post('/updateUsers', updateUsers)

@@ -84,7 +84,7 @@
                         </div>
                     </div>
                 </div>
-                <%if(notice[0].status === 3) {%>
+                <%if(notice[0].status !== 1) {%>
                 <div class="mb-5" style="max-width: 640px">
                     <div class="card">
                         <div class="card-header">
@@ -126,8 +126,8 @@
                     <form id="closeForm<%= notice[0].id%>" action="/closeNotice/<%= notice[0].id%>" method="post">
                         <label class="visually-hidden">Descripción</label>
                         <!-- <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description"> -->
-                        <textarea class="form-control" aria-label="With textarea" placeholder="Descripción" required name="description" id="description"></textarea>
-                        <button type="submit" class="btn btn-secondary rounded-2">Cerrar</button>  
+                        <!-- <textarea class="form-control" aria-label="With textarea" placeholder="Descripción" required name="description" id="description"><%=notice[0].description%></textarea> -->
+                        <button type="submit" class="btn btn-secondary rounded-2">Cerrar aviso</button>  
                     </form>
                 </div> 
                 <%}%>               
