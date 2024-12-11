@@ -1,10 +1,10 @@
-/* import { Telegraf } from "telegraf";
-import config from "../config";
+import { Telegraf } from "telegraf";
+import config from "../config.js";
 
-const bot_pmp = new Telegraf(config.token)
+const rpa_bot = new Telegraf(config.token)
 
-export const chat_id = '-1002023939034'//chat Mtto_LD
+export const chat_id = '-4780034676'//chat Mtto_LD
 
-bot_pmp.launch()
+rpa_bot.launch()
 
-export default bot_pmp  */
+export default rpa_bot 

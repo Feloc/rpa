@@ -1,5 +1,6 @@
 import { poolPC } from "../database/connection.js";
 import { queries } from "../database/queries.js";
+import rpa_bot, {chat_id} from "../telegram/bot.js";
 
 export const getPerformanceData = async (req, res) => {
     try {
@@ -17,3 +18,9 @@ export const getPerformanceData = async (req, res) => {
 export const renderPerformancePage = (req, res) => { 
     res.render('performance');
 };
+
+async function prueba() {
+    rpa_bot.telegram.sendMessage(chat_id, 'prueba')   
+}
+
+prueba()
