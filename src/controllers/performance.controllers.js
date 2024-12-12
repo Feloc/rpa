@@ -23,4 +23,14 @@ async function prueba() {
     rpa_bot.telegram.sendMessage(chat_id, 'prueba')   
 }
 
-prueba()
+// Ejemplo de uso de la función de envío de mensajes 
+/* app.post('/sendTelegramMessage', async (req, res) => { 
+    const { message } = req.body; 
+    try { await sendMessageToChat(message); 
+        res.status(200).send('Mensaje enviado correctamente'); 
+    } catch (error) { 
+        res.status(500).send('Error al enviar el mensaje'); 
+    }
+}); */
+
+//prueba()

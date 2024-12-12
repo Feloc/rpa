@@ -1,4 +1,14 @@
 import axios from 'https://cdn.skypack.dev/axios';
+//import { io } from 'https://cdn.socket.io/4.0.0/socket.io.esm.min.js';
+
+//const socket = io();
+
+// Escuchar evento de nuevo aviso 
+/* socket.on('newNotice', (data) => { 
+  console.log('Nuevo aviso recibido:', data); 
+  // Aquí puedes implementar la lógica para mostrar una reacción visual 
+  alert(`Nuevo aviso registrado:\nEquipo: ${data.equipment}\nNovedad: ${data.event}\nDescripción: ${data.notice_desc}`); 
+}); */
 
 console.log('noticess');
 

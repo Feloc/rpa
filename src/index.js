@@ -2,11 +2,13 @@ import app from './app.js'
 
 const PORT = app.get('port'); 
 
-app.listen(PORT, (err) => {
+/* app.listen(PORT, (err) => {
     if (err) { 
         console.error(`Error starting server on port ${PORT}:`, err); 
     } else { 
-        console.log(`Server is listening on port ${PORT}`); } });
+        console.log(`Server is listening on port ${PORT}`); 
+    } 
+}); */
 
 
 /* app.listen(app.get('port'))

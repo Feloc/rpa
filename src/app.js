@@ -1,7 +1,7 @@
 import express from 'express';
+import http from 'http'; 
+import { Server } from 'socket.io';
 import path from "path";
-//import ejs from 'ejs'//views como express tiene integracioj por defecto se puede obviar la importacion
-
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import sharp from 'sharp';
@@ -10,8 +10,11 @@ import config from "./config.js";
 import { connectPoolPC } from "./database/index.js";
 import noticesRoutes from './routes/notices.routes.js';
 import performanceRoutes from './routes/performance.routes.js'
+import rpa_bot from './telegram/bot.js';
 
 const app = express();
+const server = http.createServer(app); 
+const io = new Server(server);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,7 +38,22 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Conectar a la base de datos
 connectPoolPC()
-  
+
+// Integración con Socket.io 
+io.on('connection', (socket) => { 
+    console.log('A user connected'); 
+    socket.on('disconnect', () => { 
+        console.log('User disconnected'); 
+    }); 
+}); 
+
+// Exporta el servidor 
+export { server, io }; 
+server.listen(app.get('port'), () => { 
+    console.log(`Server running on port ${app.get('port')}`);
+});
+    
+
 // Middleware de manejo de errores
 app.use((err, req, res, next) => {
   console.error(err.stack);

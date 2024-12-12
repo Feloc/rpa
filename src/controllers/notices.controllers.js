@@ -5,7 +5,9 @@ import sharp from 'sharp';
 import path from "path";
 import { validationResult, query } from "express-validator";
 import { format, parseISO, addDays } from "date-fns";
-import { getUserByPassword } from "../services/userService.js";//solo si se utiliza el servicio de validacion   
+import { getUserByPassword } from "../services/userService.js";//solo si se utiliza el servicio de validacion  
+import { sendMessageToChat } from "../telegram/bot.js";
+import { io } from '../app.js';
 
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url)
@@ -126,42 +128,12 @@ export const createNotice = async (req, res) => {
         const user = await getUserByPassword(pass)
         console.log(user);
         if (!user) {
-            return res.render('error', { error: 'Invalid password.' }) 
-            /* return res.render('notices', {
-                data: [],
-                unAcceptedNotices: [], // Lista de avisos no aceptados
-                errorMessage: 'Contraseña incorrecta'
-            })    */      
+            return res.render('error', { error: 'Invalid password.' })      
         }
 
         const status = 1
         const regtime = new Date()
         console.log(equipment, event, notice_desc, regtime);
-
-        /* if (pass.length != 4) {
-            return res.render('error', { error: 'Password must be 4 characters long.' });
-        }
-
-        const users = await poolPC
-            .request()
-            .query(queries.getUsers)
-
-
-        let matchingUser = null
-        
-        for (const user of users.recordset) {
-            if (user.pass == pass) {
-                matchingUser = user
-                break
-            }
-        }
-
-        console.log(matchingUser);
-
-        // Handle no matching user
-        if (!matchingUser) {
-            return res.render('error', { error: 'Invalid password.' }); //return res.status(400).json({ error: 'Invalid password.' });
-        } */
 
         await poolPC
         .request()
@@ -172,6 +144,13 @@ export const createNotice = async (req, res) => {
         .input('regtime', sql.DateTime, regtime)
         .input('requester', sql.Int, user.id)
         .query(queries.createNotice)
+
+        // Emitir evento de Socket.io 
+        io.emit('newNotice', { equipment, event, notice_desc });
+
+        // Enviar mensaje a Telegram
+        const message = `Nuevo aviso registrado:\nEquipo: ${equipment}\nNovedad: ${event}\nDescripción: ${notice_desc}`; 
+        await sendMessageToChat(message);
 
         res.redirect('/notices')
 

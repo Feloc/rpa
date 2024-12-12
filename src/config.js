@@ -12,5 +12,6 @@ export default {
     dbDatabase: process.env.DB_DATABASE || '',
 
     //telegram
-    token: process.env.TOKEN || ''
+    token: process.env.TOKEN || '',
+    baseUrl: 'http://localhost:4000'
 }
