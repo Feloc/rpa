@@ -1,14 +1,39 @@
 import axios from 'https://cdn.skypack.dev/axios';
 //import { io } from 'https://cdn.socket.io/4.0.0/socket.io.esm.min.js';
 
-//const socket = io();
+const socket = io();
 
 // Escuchar evento de nuevo aviso 
-/* socket.on('newNotice', (data) => { 
+ socket.on('newNotice', (data) => { 
   console.log('Nuevo aviso recibido:', data); 
   // Aquí puedes implementar la lógica para mostrar una reacción visual 
-  alert(`Nuevo aviso registrado:\nEquipo: ${data.equipment}\nNovedad: ${data.event}\nDescripción: ${data.notice_desc}`); 
-}); */
+  showAlert(`Nuevo aviso registrado:\nEquipo: ${data.equipment}\nNovedad: ${data.event}\nDescripción: ${data.notice_desc}`); 
+});
+
+// Función para mostrar la alerta y hacer que desaparezca sola
+function showAlert(message) {
+  const alertContainer = document.createElement('div');
+  alertContainer.className = 'alert-container';
+  alertContainer.innerHTML = `
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+  `;
+  document.body.appendChild(alertContainer);
+
+  // Hacer que la alerta se desvanezca después de unos segundos
+  setTimeout(() => {
+      const alert = alertContainer.querySelector('.alert');
+      if (alert) {
+          alert.classList.remove('show');
+          alert.classList.add('fade');
+          setTimeout(() => {
+              alertContainer.remove();
+          }, 600); // Coincide con la duración de la transición CSS
+      }
+  }, 20000); // Tiempo que la alerta se muestra (en milisegundos)
+}
 
 console.log('noticess');
 
@@ -104,10 +129,6 @@ function injectTableIntoHTML(tableHTML) {
   tableContainer.innerHTML = tableHTML;
 }
 
-function showAlert(message) {
-  // Puedes usar un modal o algún otro componente para mostrar el mensaje al usuario
-  alert(message);
-}
 
 fetchData();
 
@@ -203,4 +224,3 @@ async function fetchData() {
 }
 
 fetchData() */
-
