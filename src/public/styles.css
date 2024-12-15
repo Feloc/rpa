@@ -5,3 +5,8 @@
     z-index: 1000;
     width: 500px;
 }
+
+.alert.fade {
+    transition: opacity 0.6s ease-out;
+    opacity: 0;
+}

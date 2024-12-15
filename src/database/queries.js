@@ -61,6 +61,42 @@ export const queries =  {
             status = 3
         GROUP BY 
             technician
+    `,
+    getEquipmentData: `
+        SELECT 
+            machine AS equipment, 
+            COUNT(id) AS numNotices, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
+        FROM 
+            notices
+        WHERE 
+            status = 3
+        GROUP BY 
+            machine
+    `,
+    getFilteredPerformanceData: `
+        SELECT 
+            technician, 
+            COUNT(id) AS numNotices, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
+        FROM 
+            notices
+        WHERE 
+            status = 3 AND starttime >= @startDate AND endtime <= @endDate
+        GROUP BY 
+            technician
+    `,
+    getFilteredEquipmentData: `
+        SELECT 
+            machine AS equipment, 
+            COUNT(id) AS numNotices, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
+        FROM 
+            notices
+        WHERE 
+            status = 3 AND starttime >= @startDate AND endtime <= @endDate
+        GROUP BY 
+            machine
     `
 
 }
