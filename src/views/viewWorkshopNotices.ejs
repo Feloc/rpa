@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avisos de Taller</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/navigation') %>
+    <div class="container">
+        <h1>Avisos de Taller</h1>
+        <div class="table-responsive">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Equipo</th>
+                        <th>Novedad</th>
+                        <th>Hora de Registro</th>
+                        <th>Técnico</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="workshopNoticesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
+    <script src="/workshopNotices.js" type="module"></script>
+</body>
+</html>

@@ -20,6 +20,23 @@ export const index = (req, res)=>{
     res.render('index',{title : "RAP"})
 }
 
+
+export const renderRegisterNoticePage = async (req, res) => {
+    try {
+        const pool = await poolPC;
+        const result = await pool.request().query(queries.getEquipment);
+        const data = result.recordset;
+
+        res.render('registerNotice', { data });
+    } catch (error) {
+        console.error('Error al obtener la lista de equipos:', error);
+        res.status(500).send('Error al obtener la lista de equipos');
+    }
+};
+
+
+
+
 //User
 export const getUsers = async (req, res) => {
     try {
@@ -74,6 +91,24 @@ export const getNotices = async (req, res) => {
     }
 }
 
+// Obtener avisos por categoría
+export const getNoticesByCategory = async (req, res) => {
+    const { location } = req.params;
+    console.log('location mia', location);
+    
+    try {
+        const pool = await poolPC;
+        const result = await pool.request()
+            .input('location', location)
+            .query(queries.getNoticesByCategory);
+        res.json(result.recordset);
+    } catch (error) {
+        console.error(`Error al obtener los avisos de la categoría ${location}:`, error);
+        res.status(500).send(`Error al obtener los avisos de la categoría ${location}`);
+    }
+};
+
+
 export const getNoticeById = async (req, res) => {
     try {
         const result = await poolPC
@@ -91,6 +126,32 @@ export const getNoticeById = async (req, res) => {
         res.send(error.message)
     }
 }
+
+
+// Obtener avisos no aceptados
+export const getUnAcceptedNotices = async (req, res) => {
+    try {
+        const pool = await poolPC;
+        const result = await pool.request().query(queries.getUnAcceptedNotices);
+        res.json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los avisos no aceptados:', error);
+        res.status(500).send('Error al obtener los avisos no aceptados');
+    }
+};
+
+// Obtener avisos aceptados
+export const getAcceptedNotices = async (req, res) => {
+    try {
+        const pool = await poolPC;
+        const result = await pool.request().query(queries.getAcceptedNotices);
+        res.json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los avisos aceptados:', error);
+        res.status(500).send('Error al obtener los avisos aceptados');
+    }
+};
+
 
 
 
@@ -121,7 +182,7 @@ export const notices = async (req, res) => {
 export const createNotice = async (req, res) => {
 
     try {
-        const {equipment, event, notice_desc, pass} = req.body
+        const {equipment, event, notice_desc, pass, location} = req.body
         console.log(pass);
 
         // Validar la contraseña
@@ -143,6 +204,7 @@ export const createNotice = async (req, res) => {
         .input('detail', sql.Text, notice_desc)
         .input('regtime', sql.DateTime, regtime)
         .input('requester', sql.Int, user.id)
+        .input('location', sql.VarChar, location)
         .query(queries.createNotice)
 
         // Emitir evento de Socket.io 
@@ -152,7 +214,7 @@ export const createNotice = async (req, res) => {
         const message = `Nuevo aviso registrado:\nEquipo: ${equipment}\nNovedad: ${event}\nDescripción: ${notice_desc}`; 
         await sendMessageToChat(message);
 
-        res.redirect('/notices')
+        res.redirect('/viewNotices')
 
     } catch (error) {
         console.error(error)
@@ -239,7 +301,7 @@ export const acceptNotice = async (req, res) => {
 
             //await poolPC.transaction().commit()
             console.log('Aviso aceptado correctamente')
-            res.redirect('/notices')
+            res.redirect('/viewNotices')
         } catch (error) {
             //await poolPC.transaction().rollback(); // Rollback on error
             console.error('Error updating notice and user:', error);
@@ -253,7 +315,7 @@ export const acceptNotice = async (req, res) => {
 }
 
 export const closeNotice = async (req, res) => {
-    const {description} = req.body
+    const {description, class_} = req.body
     const {id_notice} = req.params
     const notice_status = 3 
     const endtime = new Date() 
@@ -265,6 +327,7 @@ export const closeNotice = async (req, res) => {
         .input('id', sql.Int, id_notice)
         .input('status', sql.Int, notice_status)
         .input('endtime', sql.DateTime, endtime)
+        .input('class', sql.VarChar, class_)
         //.input('description', sql.Text, description)
         .query(queries.updateNoticeClosed) 
 
@@ -300,7 +363,7 @@ export const closeNotice = async (req, res) => {
             .query(queries.updateUsersAll)
         })
 
-        res.redirect('/notices')
+        res.redirect('/viewNotices')
 
     } catch (error) {
         console.error('Unexpected error:', error);
@@ -388,7 +451,7 @@ export const addUserNotice = async(req, res) => {
             .query(queries.insertNoticeUser)
 
             console.log('Usuario agregado correctamente')
-            res.redirect('/notices')
+            res.redirect('/viewNotices')
             } catch (error) {
                 console.error('Error adding user to notice:', error);
                 res.status(500).json({ error: 'Internal server error (addUser/notice update).' });

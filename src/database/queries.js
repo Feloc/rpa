@@ -28,13 +28,16 @@ export const queries =  {
 
     getEquipment:'SELECT * FROM equipment',
     getNotices: 'SELECT * FROM notices',
+    getUnAcceptedNotices: 'SELECT id, machine, message, regtime, location FROM notices WHERE status = 1',
+    getAcceptedNotices:'SELECT * FROM notices WHERE status = 2',
     //getNoticesHistory: 'SELECT * FROM notices WHERE status = 3',
     getNoticesHistory: `SELECT id, machine, message, regtime, starttime, endtime, technician FROM notices WHERE status = 3`,
     getNoticeById: 'SELECT * FROM notices WHERE id = @id',
-    createNotice: 'INSERT INTO notices(status, machine, message, detail, regtime, requester) VALUES (@status, @machine, @message, @detail, @regtime, @requester)',
+    createNotice: 'INSERT INTO notices(status, machine, message, detail, regtime, requester, location) VALUES (@status, @machine, @message, @detail, @regtime, @requester, @location)',
     updateNotice: 'UPDATE notices SET status = @status, starttime = @starttime, technician = @technician WHERE id = @id',
     updateNoticeDescription: 'UPDATE notices SET description = @description WHERE id = @id',
-    updateNoticeClosed: 'UPDATE notices SET status = @status, endtime = @endtime WHERE id = @id',
+    updateNoticeClosed: 'UPDATE notices SET status = @status, endtime = @endtime, class = @class WHERE id = @id',
+    getNoticesByCategory: 'SELECT id, machine, message, regtime, location, status FROM notices WHERE location = @location ',
 
     //NoticeUser
     insertNoticeUser: 'INSERT INTO notices_user(id_user, id_notice, starttime) VALUES (@id_user, @id_notice, @starttime)',
@@ -52,7 +55,8 @@ export const queries =  {
     //Performance
     getPerformanceData: `
         SELECT 
-            technician, 
+            technician,
+            location, 
             COUNT(id) AS numNotices, 
             SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
         FROM 
@@ -60,11 +64,12 @@ export const queries =  {
         WHERE 
             status = 3
         GROUP BY 
-            technician
+            technician, location
     `,
     getEquipmentData: `
         SELECT 
-            machine AS equipment, 
+            machine AS equipment,
+            location, 
             COUNT(id) AS numNotices, 
             SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
         FROM 
@@ -72,11 +77,12 @@ export const queries =  {
         WHERE 
             status = 3
         GROUP BY 
-            machine
+            machine, location
     `,
     getFilteredPerformanceData: `
         SELECT 
-            technician, 
+            technician,
+            location, 
             COUNT(id) AS numNotices, 
             SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
         FROM 
@@ -84,11 +90,12 @@ export const queries =  {
         WHERE 
             status = 3 AND starttime >= @startDate AND endtime <= @endDate
         GROUP BY 
-            technician
+            technician, location
     `,
     getFilteredEquipmentData: `
         SELECT 
-            machine AS equipment, 
+            machine AS equipment,
+            location, 
             COUNT(id) AS numNotices, 
             SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
         FROM 
@@ -96,7 +103,7 @@ export const queries =  {
         WHERE 
             status = 3 AND starttime >= @startDate AND endtime <= @endDate
         GROUP BY 
-            machine
+            machine, location
     `
 
 }

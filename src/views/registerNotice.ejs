@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Aviso</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/navigation') %>
+    <div class="container">
+        <h1>Registrar Aviso</h1>
+        <!-- Mostrar mensajes de error -->
+        <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+            <div class="alert alert-danger" role="alert">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        <form id="noticeForm" class="row row-cols-lg-auto g-3 align-items-center" action="/createNotice" method="post">
+            <div class="col-12">
+                <label class="visually-hidden" for="equipment">Equipo</label>
+                <select class="form-select" id="equipment" name="equipment" required>
+                    <option value="" selected disabled>Selecciona un equipo...</option>
+                    <% data.forEach(key => { %>
+                        <option value="<%= key.name %>"><%= key.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="visually-hidden" for="event">Novedad</label>
+                <input type="text" id="event" name="event" class="form-control" placeholder="Novedad" autocomplete="off" required>
+            </div>
+            <div class="col-12">
+                <label class="visually-hidden" for="notice_desc">Descripción</label>
+                <textarea class="form-control" id="notice_desc" name="notice_desc" rows="1" placeholder="Descripción (opcional)"></textarea>
+            </div>
+            <div class="col-12">
+                <label class="visually-hidden" for="location">Ubicación</label>
+                <select class="form-select" id="location" name="location" required>
+                    <option value="planta">Planta</option>
+                    <option value="taller">Taller</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <label class="visually-hidden" for="pass">Contraseña</label>
+                <input type="password" class="form-control" placeholder="Contraseña" required name="pass" id="pass">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-secondary rounded-2">Crear</button>
+            </div>
+        </form>
+    </div>
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
+</body>
+</html>
+

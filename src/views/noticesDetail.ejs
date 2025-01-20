@@ -46,22 +46,21 @@
                 </div>
             </div> -->
             <div class="col-md-6">
-                <div class="card mb-3" >
+                <div class="card mb-3">
                     <div class="row g-0">
-                      <div class="col-md-4">
-                        <img src="/img/<%=notice[0].machine%>.png" class="img-fluid rounded-start" alt="...">
-                      </div>
-                      <div class="col-md-8">
-                        <div class="card-body">
-                          <h5 class="card-title">Aviso N° <%= notice[0].id%></h5>
-                          <h5 class="card-title"><%=notice[0].machine%></h5>
-                          <p class="card-text"></p>
-                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].technician%></small></p>
-                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].starttime ? notice[0].starttime.toLocaleString() : ''%></small></p>
-                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].endtime ? notice[0].endtime.toLocaleString() : ''%></small></p>
-                          <p class="card-text"><small class="text-body-secondary"><%=notice[0].endtime ? ((new Date(notice[0].endtime)-new Date(notice[0].starttime))/(1000*60)).toFixed(0) + ' Min' : ''%></small></p>
+                        <div class="col-md-4">
+                            <img src="/img/<%= notice[0].machine %>.png" class="img-fluid rounded-start" alt="...">
                         </div>
-                      </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Aviso N° <%= notice[0].id %></h5>
+                                <h5 class="card-title"><%= notice[0].machine %></h5>
+                                <p class="card-text"><small class="text-body-secondary"><%= notice[0].technician %></small></p>
+                                <p class="card-text"><small class="text-body-secondary"><%= notice[0].starttime ? notice[0].starttime.toLocaleString() : '' %></small></p>
+                                <p class="card-text"><small class="text-body-secondary"><%= notice[0].endtime ? notice[0].endtime.toLocaleString() : '' %></small></p>
+                                <p class="card-text"><small class="text-body-secondary"><%= notice[0].endtime ? ((new Date(notice[0].endtime) - new Date(notice[0].starttime)) / (1000 * 60)).toFixed(0) + ' Min' : '' %></small></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3" style="max-width: 640px">
@@ -70,28 +69,28 @@
                             Aviso
                         </div>
                         <div class="card-body">
-                            <%=notice[0].message%>
+                            <%= notice[0].message %>
                         </div>
                     </div>
-                </div> 
+                </div>
                 <div class="mb-3" style="max-width: 640px">
                     <div class="card">
                         <div class="card-header">
                             Descripción detallada
                         </div>
                         <div class="card-body">
-                            <%=notice[0].detail%>
+                            <%= notice[0].detail %>
                         </div>
                     </div>
                 </div>
-                <%if(notice[0].status !== 1) {%>
+                <% if (notice[0].status !== 1) { %>
                 <div class="mb-5" style="max-width: 640px">
                     <div class="card">
                         <div class="card-header">
                             Descripción
                         </div>
-                        <div class="card-body">               
-                            <p class="card-text"><%=notice[0].description%></p>
+                        <div class="card-body">
+                            <p class="card-text"><%= notice[0].description %></p>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                                 Editar
                             </button>
@@ -104,33 +103,36 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form id="closeForm<%= notice[0].id%>" action="/updateNotice/<%= notice[0].id%>" method="post">
-                                                <label class="visually-hidden">Descripción</label>
-                                                <!-- <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description-${item.id}"> -->
-                                                <textarea class="form-control" aria-label="With textarea" placeholder="Descripción" required name="description" id="description"><%=notice[0].description%></textarea>
-                                                <button type="submit" class="btn btn-secondary rounded-2">Editar</button>  
+                                            <form id="updateForm<%= notice[0].id %>" action="/updateNotice/<%= notice[0].id %>" method="post">
+                                                <label class="visually-hidden" for="description">Descripción</label>
+                                                <textarea class="form-control" aria-label="With textarea" placeholder="Descripción" required name="description" id="description"><%= notice[0].description %></textarea>
+                                                <button type="submit" class="btn btn-secondary rounded-2">Editar</button>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>    
-                <%}%>  
-                <%if(notice[0].status === 2) {%>
+                </div>
+                <% } %>
+                <% if (notice[0].status === 2) { %>
                 <div class="mb-5" style="max-width: 640px">
-                    <form id="closeForm<%= notice[0].id%>" action="/closeNotice/<%= notice[0].id%>" method="post">
-                        <label class="visually-hidden">Descripción</label>
-                        <!-- <input type="textarea" class="form-control" placeholder="Descripción" required name="description" id="description"> -->
-                        <!-- <textarea class="form-control" aria-label="With textarea" placeholder="Descripción" required name="description" id="description"><%=notice[0].description%></textarea> -->
-                        <button type="submit" class="btn btn-secondary rounded-2">Cerrar aviso</button>  
+                    <form id="closeForm<%= notice[0].id %>" action="/closeNotice/<%= notice[0].id %>" method="post">
+                        <label class="visually-hidden" for="class_">Clase</label>
+                        <select class="form-select mb-3" id="class_" name="class_" required>
+                            <option value="" selected disabled>Selecciona una clase...</option>
+                            <option value="PM01">PM01(Correctivo)</option>
+                            <option value="PM02">PM02(Preventivo)</option>
+                            <option value="PM03">PM03(Actividad)</option>
+                        </select>
+                        <button type="submit" class="btn btn-secondary rounded-2">Cerrar aviso</button>
                     </form>
-                </div> 
-                <%}%>               
+                </div>
+                <% } %>
             </div>
             <div class="col-md-4">
                 <div id="uploadContainer" data-id-notice="<%= notice[0].id %>">
@@ -202,5 +204,25 @@
     <%- include('partials/scripts') %>   
 <script src="/noticesDetail.js" type="module"></script>
 
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Aviso</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/navigation') %>
+    <div class="container">
+        <div class="row">
+            
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
 </body>
 </html>
