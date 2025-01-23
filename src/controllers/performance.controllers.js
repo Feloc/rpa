@@ -27,6 +27,8 @@ export const getEquipmentData = async (req, res) => {
 
 export const getFilteredPerformanceData = async (req, res) => {
     const { startDate, endDate } = req.query;
+    console.log(startDate, endDate);
+    
     try {
         const pool = await poolPC;
         const request = pool.request();
@@ -38,7 +40,7 @@ export const getFilteredPerformanceData = async (req, res) => {
         console.error('Error al obtener los datos de rendimiento filtrados:', error);
         res.status(500).send('Error al obtener los datos de rendimiento filtrados');
     }
-};
+}; 
 
 export const getFilteredEquipmentData = async (req, res) => {
     const { startDate, endDate } = req.query;

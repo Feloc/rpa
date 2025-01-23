@@ -95,7 +95,7 @@ export const queries =  {
     getFilteredEquipmentData: `
         SELECT 
             machine AS equipment,
-            location, 
+            location, class,
             COUNT(id) AS numNotices, 
             SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
         FROM 
@@ -103,7 +103,7 @@ export const queries =  {
         WHERE 
             status = 3 AND starttime >= @startDate AND endtime <= @endDate
         GROUP BY 
-            machine, location
+            machine, location, class
     `
 
 }
