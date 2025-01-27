@@ -21,9 +21,22 @@
                 <label class="visually-hidden" for="equipment">Equipo</label>
                 <select class="form-select" id="equipment" name="equipment" required>
                     <option value="" selected disabled>Selecciona un equipo...</option>
-                    <% data.forEach(key => { %>
-                        <option value="<%= key.name %>"><%= key.name %></option>
-                    <% }) %>
+                    <% 
+                    const areaMap = {};
+                    data.forEach(key => { 
+                        if (!areaMap[key.area]) {
+                            areaMap[key.area] = [];
+                        }
+                        areaMap[key.area].push(key.name);
+                    });
+                    Object.keys(areaMap).forEach(area => { 
+                    %>
+                        <optgroup label="<%= area %>">
+                            <% areaMap[area].forEach(equipment => { %>
+                                <option value="<%= equipment %>"><%= equipment %></option>
+                            <% }) %>
+                        </optgroup>
+                    <% }); %>
                 </select>
             </div>
             <div class="col-12">
@@ -54,4 +67,3 @@
     <%- include('partials/scripts') %>
 </body>
 </html>
-

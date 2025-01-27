@@ -26,7 +26,7 @@ export const queries =  {
     updateUsersAll: `UPDATE users_ SET status = 'inactive' WHERE id = @id`,
 
 
-    getEquipment:'SELECT * FROM equipment',
+    getEquipment:'SELECT area, id, name FROM equipment ORDER BY area, name',
     getNotices: 'SELECT * FROM notices',
     getUnAcceptedNotices: 'SELECT id, machine, message, regtime, location FROM notices WHERE status = 1',
     getAcceptedNotices:'SELECT * FROM notices WHERE status = 2',
@@ -69,7 +69,6 @@ export const queries =  {
     getEquipmentData: `
         SELECT 
             machine AS equipment,
-            location, 
             COUNT(id) AS numNotices, 
             SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
         FROM 
@@ -77,7 +76,7 @@ export const queries =  {
         WHERE 
             status = 3
         GROUP BY 
-            machine, location
+            machine
     `,
     getFilteredPerformanceData: `
         SELECT 
@@ -94,8 +93,7 @@ export const queries =  {
     `,
     getFilteredEquipmentData: `
         SELECT 
-            machine AS equipment,
-            location, class,
+            machine AS equipment, class,
             COUNT(id) AS numNotices, 
             SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
         FROM 
@@ -103,7 +101,29 @@ export const queries =  {
         WHERE 
             status = 3 AND starttime >= @startDate AND endtime <= @endDate
         GROUP BY 
-            machine, location, class
+            machine, class
+    `,
+    getEquipmentDataByClass: `
+        SELECT 
+            machine AS equipment, 
+            class,
+            COUNT(id) AS numNotices, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime 
+        FROM notices 
+        WHERE status = 3 
+        GROUP BY machine, class
+    `,
+    getFilteredEquipmentDataByClass: `
+        SELECT 
+            machine AS equipment, 
+            class,
+            COUNT(id) AS numNotices, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime 
+        FROM notices 
+        WHERE status = 3 
+          AND starttime >= @startDate 
+          AND endtime <= @endDate 
+        GROUP BY machine, class
     `
 
 }

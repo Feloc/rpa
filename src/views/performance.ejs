@@ -53,13 +53,26 @@
             <thead>
                 <tr>
                     <th>Equipo</th>
-                    <th>Clase</th>
-                    <th>Ubicación</th>
                     <th>Número de Avisos</th>
                     <th>Tiempo Total (minutos)</th>
                 </tr>
             </thead>
             <tbody id="equipmentTableBody"></tbody>
+        </table>
+
+        <!-- Tabla de Equipos -->
+        <h2>Avisos por Máquina y Clase</h2>
+        <canvas id="equipmentClassChart"></canvas>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Clase</th>
+                    <th>Número de Avisos</th>
+                    <th>Tiempo Total (minutos)</th>
+                </tr>
+            </thead>
+            <tbody id="equipmentClassTableBody"></tbody>
         </table>
     </div>
     <%- include('partials/footer') %>
@@ -67,17 +80,33 @@
     <script>
         let performanceChartInstance = null;
         let equipmentChartInstance = null;
+        let equipmentClassChartInstance = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
+            setDefaultDates();
             await loadPerformanceData();
             await loadEquipmentData();
+            await loadEquipmentClassData();
         });
+
+        function setDefaultDates() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+            startDateInput.value = startOfMonth.toISOString().slice(0, 10)
+            endDateInput.value = endOfMonth.toISOString().slice(0, 10)
+        }
+
 
         async function loadPerformanceData(startDate, endDate) {
             const url = startDate && endDate ? `/performance/filtered?startDate=${startDate}&endDate=${endDate}` : '/performance/data';
             const response = await fetch(url);
             const data = await response.json();
-            console.log(data);
+            //console.log(data);
             
 
             const labels = data.map(item => `${item.technician} (${item.location})`);
@@ -86,7 +115,7 @@
 
             const ctx = document.getElementById('performanceChart').getContext('2d');
 
-            console.log(url);
+            //console.log(url);
             
 
             if (performanceChartInstance) {
@@ -139,7 +168,7 @@
             const response = await fetch(url);
             const data = await response.json();
 
-            const labels = data.map(item => `${item.equipment} (${item.location})`);
+            const labels = data.map(item => item.equipment);
             const classes = data.map(item => item.class);
             const numNotices = data.map(item => item.numNotices);
             const totalTime = data.map(item => item.totalTime);
@@ -184,14 +213,74 @@
             tableBody.innerHTML = data.map(item => `
                 <tr>
                     <td>${item.equipment}</td>
-                    <td>${item.class}</td>
-                    <td>${item.location}</td>
                     <td>${item.numNotices}</td>
                     <td>${item.totalTime}</td>
                 </tr>
             `).join('');
         }
 
+        async function loadEquipmentClassData(startDate, endDate) {
+            const url = startDate && endDate ? `/equipmentClass/filtered?startDate=${startDate}&endDate=${endDate}` : '/equipmentClass/data';
+            const response = await fetch(url);
+            const data = await response.json();
+
+            const labels = [...new Set(data.map(item => item.equipment))];
+            const classes = ['PM01', 'PM02', 'PM03'];
+
+            const noticeDataset = classes.map(cls => ({
+                label: `Número de Avisos (${cls})`,
+                data: labels.map(equipment => {
+                    const filteredData = data.filter(item => item.equipment === equipment && item.class === cls);
+                    return filteredData.reduce((sum, item) => sum + item.numNotices, 0);
+                }),
+                backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.2)`,
+                borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`,
+                borderWidth: 1
+            }));
+
+            const timeDataset = classes.map(cls => ({
+                label: `Tiempo Total (${cls})`,
+                data: labels.map(equipment => {
+                    const filteredData = data.filter(item => item.equipment === equipment && item.class === cls);
+                    return filteredData.reduce((sum, item) => sum + item.totalTime, 0);
+                }),
+                backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.2)`,
+                borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 1)`,
+                borderWidth: 1
+            }));
+
+            const ctx = document.getElementById('equipmentClassChart').getContext('2d');
+
+            if (equipmentClassChartInstance) {
+                equipmentClassChartInstance.destroy();
+            }
+
+            equipmentClassChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [...noticeDataset, ...timeDataset]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+
+            const tableBody = document.getElementById('equipmentClassTableBody');
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.equipment}</td>
+                    <td>${item.class}</td>
+                    <td>${item.numNotices}</td>
+                    <td>${item.totalTime}</td>
+                </tr>
+            `).join('');
+        }
 
         /* function applyFilter() {
             const startDate = new Date(document.getElementById('startDate').value).toISOString(); 
@@ -214,6 +303,7 @@
 
             loadPerformanceData(startDate.toISOString(), endDate.toISOString());
             loadEquipmentData(startDate.toISOString(), endDate.toISOString());
+            loadEquipmentClassData(startDate.toISOString(), endDate.toISOString());
         }
 
         /* function applyFilter() { 

@@ -57,6 +57,32 @@ export const getFilteredEquipmentData = async (req, res) => {
     }
 };
 
+export const getEquipmentDataByClass = async (req, res) => {
+    try {
+        const pool = await poolPC;
+        const result = await pool.request().query(queries.getEquipmentDataByClass);
+        res.json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los datos de los equipos por clase:', error);
+        res.status(500).send('Error al obtener los datos de los equipos por clase');
+    }
+};
+
+export const getFilteredEquipmentDataByClass = async (req, res) => {
+    const { startDate, endDate } = req.query;
+    try {
+        const pool = await poolPC;
+        const request = pool.request();
+        request.input('startDate', startDate);
+        request.input('endDate', endDate);
+        const result = await request.query(queries.getFilteredEquipmentDataByClass);
+        res.json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener los datos de los equipos por clase filtrados:', error);
+        res.status(500).send('Error al obtener los datos de los equipos por clase filtrados');
+    }
+};
+
 export const renderPerformancePage = (req, res) => { 
     res.render('performance');
 };
