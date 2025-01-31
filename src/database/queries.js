@@ -31,7 +31,7 @@ export const queries =  {
     getUnAcceptedNotices: 'SELECT id, machine, message, regtime, location FROM notices WHERE status = 1',
     getAcceptedNotices:'SELECT * FROM notices WHERE status = 2',
     //getNoticesHistory: 'SELECT * FROM notices WHERE status = 3',
-    getNoticesHistory: `SELECT id, machine, message, regtime, starttime, endtime, technician FROM notices WHERE status = 3`,
+    getNoticesHistory: `SELECT id, machine, message, regtime, starttime, endtime, technician FROM notices WHERE status = 3 ORDER BY endtime desc`,
     getNoticeById: 'SELECT * FROM notices WHERE id = @id',
     createNotice: 'INSERT INTO notices(status, machine, message, detail, regtime, requester, location) VALUES (@status, @machine, @message, @detail, @regtime, @requester, @location)',
     updateNotice: 'UPDATE notices SET status = @status, starttime = @starttime, technician = @technician WHERE id = @id',
@@ -55,16 +55,12 @@ export const queries =  {
     //Performance
     getPerformanceData: `
         SELECT 
-            technician,
-            location, 
-            COUNT(id) AS numNotices, 
-            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
-        FROM 
-            notices
-        WHERE 
-            status = 3
-        GROUP BY 
-            technician, location
+            u.name AS technician, 
+            COUNT(DISTINCT nu.id_notice) AS numNotices, 
+            SUM(DATEDIFF(minute, nu.starttime, nu.endtime)) AS totalTime 
+        FROM notices_user nu
+        JOIN users_ u ON nu.id_user = u.id
+        GROUP BY u.name
     `,
     getEquipmentData: `
         SELECT 
@@ -80,16 +76,14 @@ export const queries =  {
     `,
     getFilteredPerformanceData: `
         SELECT 
-            technician,
-            location, 
-            COUNT(id) AS numNotices, 
-            SUM(DATEDIFF(minute, starttime, endtime)) AS totalTime
-        FROM 
-            notices
-        WHERE 
-            status = 3 AND starttime >= @startDate AND endtime <= @endDate
-        GROUP BY 
-            technician, location
+            u.name AS technician, 
+            COUNT(DISTINCT nu.id_notice) AS numNotices, 
+            SUM(DATEDIFF(minute, nu.starttime, nu.endtime)) AS totalTime 
+        FROM notices_user nu
+        JOIN users_ u ON nu.id_user = u.id
+        WHERE nu.starttime >= '2025-01-30 05:00:00.000'
+          AND nu.endtime <= '2025-01-31 23:59:59.999'
+        GROUP BY u.name
     `,
     getFilteredEquipmentData: `
         SELECT 
