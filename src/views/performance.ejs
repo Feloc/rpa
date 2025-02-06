@@ -74,6 +74,47 @@
             </thead>
             <tbody id="equipmentClassTableBody"></tbody>
         </table>
+
+        <h1>Reportes de Rendimiento de Equipos</h1>
+        <!-- Base de Tiempo de Operación -->
+        <h2>Base de Tiempo Total de Operación</h2>
+        <p id="totalOperationTime"></p>
+
+        <!-- MTBF -->
+        <h2>MTBF</h2>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>MTBF (minutos)</th>
+                </tr>
+            </thead>
+            <tbody id="mtbfTableBody"></tbody>
+        </table>
+
+        <!-- MTTR -->
+        <h2>MTTR</h2>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>MTTR (minutos)</th>
+                </tr>
+            </thead>
+            <tbody id="mttrTableBody"></tbody>
+        </table>
+
+        <!-- Disponibilidad -->
+        <h2>Disponibilidad</h2>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>Disponibilidad</th>
+                </tr>
+            </thead>
+            <tbody id="availabilityTableBody"></tbody>
+        </table>
     </div>
     <%- include('partials/footer') %>
     <%- include('partials/scripts') %>
@@ -83,10 +124,22 @@
         let equipmentClassChartInstance = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
+
             setDefaultDates();
-            await loadPerformanceData();
-            await loadEquipmentData();
-            await loadEquipmentClassData();
+            const startDateInput = document.getElementById('startDate').value;
+            const endDateInput = document.getElementById('endDate').value;
+            const startDate = new Date(startDateInput);
+            startDate.setUTCHours(5, 0, 0, 0);
+            const endDate = new Date(endDateInput);
+            endDate.setUTCHours(28, 59, 59, 999); 
+            const totalOperationTime = calculateTotalOperationTime();
+            await loadPerformanceData(startDate.toISOString(), endDate.toISOString());
+            await loadEquipmentData(startDate.toISOString(), endDate.toISOString());
+            await loadEquipmentClassData(startDate.toISOString(), endDate.toISOString());
+            await loadMTBFData(startDate.toISOString(), endDate.toISOString(), totalOperationTime);
+            await loadMTTRData(startDate.toISOString(), endDate.toISOString(), totalOperationTime);
+            await loadAvailabilityData(startDate.toISOString(), endDate.toISOString(), totalOperationTime);
+            document.getElementById('totalOperationTime').innerText = `Tiempo Total de Operación (minutos): ${totalOperationTime}`;
         });
 
         function setDefaultDates() {
@@ -99,11 +152,38 @@
 
             startDateInput.value = startOfMonth.toISOString().slice(0, 10)
             endDateInput.value = endOfMonth.toISOString().slice(0, 10)
+
+            //loadPerformanceData(startOfMonth.toISOString(), endOfMonth.toISOString())
+        }
+
+        function calculateTotalOperationTime() {
+            const now = new Date();
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            let totalOperationMinutes = 0;
+
+            for (let date = startOfMonth; date <= now; date.setDate(date.getDate() + 1)) {
+                const dayOfWeek = date.getDay();
+
+                if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+                    // Lunes a Viernes: 2 turnos de 8 horas cada uno
+                    totalOperationMinutes += 2 * 8 * 60;
+                } else if (dayOfWeek === 6) {
+                    // Sábado: 2 turnos de 6 horas cada uno
+                    totalOperationMinutes += 2 * 6 * 60;
+                }
+                // Domingo: no se trabaja
+            }
+
+            return totalOperationMinutes;
         }
 
 
         async function loadPerformanceData(startDate, endDate) {
             const url = startDate && endDate ? `/performance/filtered?startDate=${startDate}&endDate=${endDate}` : '/performance/data';
+            console.log('Url' + url);
+            
+            console.log('loadPer' + startDate, endDate);
+            
             const response = await fetch(url);
             const data = await response.json();
             //console.log(data);
@@ -282,6 +362,43 @@
             `).join('');
         }
 
+
+        async function loadMTBFData(startDate, endDate, totalOperationTime) {
+            const response = await fetch(`/performance/mtbf?startDate=${startDate}&endDate=${endDate}`);
+            const data = await response.json();
+            const tableBody = document.getElementById('mtbfTableBody');
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.equipment}</td>
+                    <td>${item.mtbf}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadMTTRData(startDate, endDate, totalOperationTime) {
+            const response = await fetch(`/performance/mttr?startDate=${startDate}&endDate=${endDate}`);
+            const data = await response.json();
+            const tableBody = document.getElementById('mttrTableBody');
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.equipment}</td>
+                    <td>${item.mttr}</td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadAvailabilityData(startDate, endDate, totalOperationTime) {
+            const response = await fetch(`/performance/availability?startDate=${startDate}&endDate=${endDate}`);
+            const data = await response.json();
+            const tableBody = document.getElementById('availabilityTableBody');
+            tableBody.innerHTML = data.map(item => `
+                <tr>
+                    <td>${item.equipment}</td>
+                    <td>${item.availability}</td>
+                </tr>
+            `).join('');
+        }
+
         /* function applyFilter() {
             const startDate = new Date(document.getElementById('startDate').value).toISOString(); 
             const endDate = new Date(document.getElementById('endDate').value).toISOString();
@@ -290,6 +407,7 @@
         } */
 
         function applyFilter() {
+            console.log('aplicando filtro');
             const startDateInput = document.getElementById('startDate').value;
             const endDateInput = document.getElementById('endDate').value;
 

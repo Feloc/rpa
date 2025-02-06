@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getEquipmentData, getEquipmentDataByClass, getFilteredEquipmentData, getFilteredEquipmentDataByClass, getFilteredPerformanceData, getPerformanceData, renderPerformancePage } from "../controllers/performance.controllers.js";
+import { getAvailabilityData, getEquipmentData, getEquipmentDataByClass, getFilteredEquipmentData, getFilteredEquipmentDataByClass, getFilteredPerformanceData, getMTBFData, getMTTRData, getPerformanceData, renderPerformancePage } from "../controllers/performance.controllers.js";
 
 const router = Router();
 
@@ -10,6 +10,9 @@ router.get('/equipmentClass/data', getEquipmentDataByClass);
 router.get('/performance/filtered', getFilteredPerformanceData);
 router.get('/equipment/filtered', getFilteredEquipmentData);
 router.get('/equipmentClass/filtered', getFilteredEquipmentDataByClass);
+router.get('/performance/mtbf', getMTBFData);
+router.get('/performance/mttr', getMTTRData);
+router.get('/performance/availability', getAvailabilityData);
 
 // Ruta para renderizar la página de rendimiento
 router.get('/performance', renderPerformancePage);

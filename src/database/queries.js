@@ -36,7 +36,7 @@ export const queries =  {
     createNotice: 'INSERT INTO notices(status, machine, message, detail, regtime, requester, location) VALUES (@status, @machine, @message, @detail, @regtime, @requester, @location)',
     updateNotice: 'UPDATE notices SET status = @status, starttime = @starttime, technician = @technician WHERE id = @id',
     updateNoticeDescription: 'UPDATE notices SET description = @description WHERE id = @id',
-    updateNoticeClosed: 'UPDATE notices SET status = @status, endtime = @endtime, class = @class WHERE id = @id',
+    updateNoticeClosed: 'UPDATE notices SET status = @status, endtime = @endtime, class = @class, stopped = @stopped WHERE id = @id',
     getNoticesByCategory: 'SELECT id, machine, message, regtime, location, status FROM notices WHERE location = @location ',
 
     //NoticeUser
@@ -81,8 +81,8 @@ export const queries =  {
             SUM(DATEDIFF(minute, nu.starttime, nu.endtime)) AS totalTime 
         FROM notices_user nu
         JOIN users_ u ON nu.id_user = u.id
-        WHERE nu.starttime >= '2025-01-30 05:00:00.000'
-          AND nu.endtime <= '2025-01-31 23:59:59.999'
+        WHERE nu.starttime >= @startDate
+          AND nu.endtime <= @endDate
         GROUP BY u.name
     `,
     getFilteredEquipmentData: `
@@ -118,6 +118,39 @@ export const queries =  {
           AND starttime >= @startDate 
           AND endtime <= @endDate 
         GROUP BY machine, class
+    `,
+    getMTBFData: `
+        SELECT 
+            machine AS equipment, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalRepairTime,
+            COUNT(id) AS numFailures 
+        FROM notices 
+        WHERE class = 'PM01'
+            AND starttime >= @startDate 
+            AND endtime <= @endDate
+        GROUP BY machine
+    `,
+    getMTTRData: `
+        SELECT 
+            machine AS equipment, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalRepairTime,
+            COUNT(id) AS numFailures 
+        FROM notices 
+        WHERE class = 'PM01'
+            AND starttime >= @startDate 
+            AND endtime <= @endDate
+        GROUP BY machine
+    `,
+    getAvailabilityData: `
+        SELECT 
+            machine AS equipment, 
+            SUM(DATEDIFF(minute, starttime, endtime)) AS totalRepairTime,
+            COUNT(id) AS numFailures 
+        FROM notices 
+        WHERE class = 'PM01'
+            AND starttime >= @startDate 
+            AND endtime <= @endDate
+        GROUP BY machine
     `
 
 }

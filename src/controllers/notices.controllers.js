@@ -315,10 +315,11 @@ export const acceptNotice = async (req, res) => {
 }
 
 export const closeNotice = async (req, res) => {
-    const {description, class_} = req.body
+    const {description, class_, machineStopped} = req.body
     const {id_notice} = req.params
     const notice_status = 3 
     const endtime = new Date() 
+    const machineStoppedValue = machineStopped === 'yes' ? 'yes' : 'no';
     console.log(description, id_notice, endtime);
 
     try {
@@ -328,6 +329,7 @@ export const closeNotice = async (req, res) => {
         .input('status', sql.Int, notice_status)
         .input('endtime', sql.DateTime, endtime)
         .input('class', sql.VarChar, class_)
+        .input('stopped',sql.VarChar, machineStoppedValue)
         //.input('description', sql.Text, description)
         .query(queries.updateNoticeClosed) 
 

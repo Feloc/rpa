@@ -99,7 +99,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Editar Descripción</h1>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -129,6 +129,15 @@
                             <option value="PM02">PM02(Preventivo)</option>
                             <option value="PM03">PM03(Actividad)</option>
                         </select>
+
+                        <!-- Nueva casilla de verificación para determinar si la máquina está parada -->
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="machineStopped" name="machineStopped" value="yes">
+                            <label class="form-check-label" for="machineStopped">
+                                ¿Máquina parada?
+                            </label>
+                        </div>
+
                         <button type="submit" class="btn btn-secondary rounded-2">Cerrar aviso</button>
                     </form>
                 </div>
