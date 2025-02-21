@@ -338,13 +338,40 @@ export const closeNotice = async (req, res) => {
         .request()
         .query(queries.getNoticeUserFilter)
 
-        const noticeUserFilter = [] = result.recordset.filter(item => (item.id == id_notice && item.endtime === null))
+        console.log('Result Recordset:', result.recordset);
+
+        // Filtrar solo las entradas sin endtime
+        const noticeUserFilter = result.recordset.filter(item => (item.id === parseInt(id_notice, 10) && item.endtime === null));
+        console.log('id', id_notice);
+        
+        console.log('Filtered Result:', noticeUserFilter);
+        
+        // Obtener la última entrada sin endtime
+        const lastNoticeUser = noticeUserFilter[noticeUserFilter.length - 1];
+        console.log('Last Notice User:', lastNoticeUser);
+
+        if (lastNoticeUser) {
+            await poolPC
+                .request()
+                .input('endtime', sql.DateTime, endtime)
+                .input('id_user', sql.Int, lastNoticeUser.user_id)
+                .input('id', sql.Int, lastNoticeUser.id_notices_user)
+                .query(queries.updateNoticesUser);
+
+            await poolPC
+                .request()
+                .input('id', sql.Int, lastNoticeUser.user_id)
+                .query(queries.updateUsersAll);
+        }
+
+        //const noticeUserFilter = result.recordset.filter(item => (item.id == id_notice && item.endtime === null))
+        //const noticeUserFilterLast = [] = noticeUserFilter[noticeUserFilter.length-1]
+        //const noticeUserFilter = [] = result.recordset.filter(item => (item.id == id_notice))
         //console.log(result.recordset);
-        console.log(noticeUserFilter);
         //console.log(noticeUserFilter.length);
 
 
-        noticeUserFilter.map ( async item => {
+        /* noticeUserFilter.map ( async item => {
             const endTime = new Date()
             console.log(item.user_id);
             console.log(item.id);
@@ -363,7 +390,7 @@ export const closeNotice = async (req, res) => {
             .request()
             .input('id', sql.Int, item.user_id)
             .query(queries.updateUsersAll)
-        })
+        }) */
 
         res.redirect('/viewNotices')
 

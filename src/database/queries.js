@@ -43,7 +43,7 @@ export const queries =  {
     insertNoticeUser: 'INSERT INTO notices_user(id_user, id_notice, starttime) VALUES (@id_user, @id_notice, @starttime)',
     getNoticeUserFilter: `SELECT notices_user.id AS 'id_notices_user', notices.id, users_.name, users_.id AS 'user_id', notices_user.starttime, notices_user.endtime, notices_user.comment, users_.status FROM users_ JOIN notices_user ON notices_user.id_user = users_.id JOIN notices ON notices.id = notices_user.id_notice WHERE notices.id <> 0`,
     getNoticeUserFilterById: `SELECT notices_user.id AS 'id_notices_user', notices.id, users_.name, users_.id AS 'user_id', notices_user.starttime, notices_user.endtime, notices_user.comment, users_.status FROM users_ JOIN notices_user ON notices_user.id_user = users_.id JOIN notices ON notices.id = notices_user.id_notice WHERE notices.id <> 0 AND notices.id = @id AND users_.status = 'active' AND notices_user.endtime IS NULL`,
-    updateNoticesUser: 'UPDATE notices_user SET endtime = @endtime WHERE id_user = @id_user AND id_notice = @id_notice',
+    updateNoticesUser: 'UPDATE notices_user SET endtime = @endtime WHERE id_user = @id_user AND id = @id',
     exitUserNotice : 'UPDATE notices_user SET endtime = @endtime, comment = @comment WHERE id = @id AND id_user = @id_user AND id_notice = @id_notice',
     getNoticesUser_UserId: 'SELECT * FROM notices_user JOIN users_ on notices_user.id_user = users_.id WHERE id_notice = @id_notice',
 
