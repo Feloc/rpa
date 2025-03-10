@@ -44,6 +44,28 @@ axios.interceptors.response.use(
     }
 );
 
+document.addEventListener('click', (event) => {
+    if (event.target.matches('.priority-up')) {
+        const id = event.target.dataset.id;
+        updatePriority(id, 'up');
+    } else if (event.target.matches('.priority-down')) {
+        const id = event.target.dataset.id;
+        updatePriority(id, 'down');
+    }
+});
+
+
+async function updatePriority(id, direction) {
+    try {
+        await axios.post(`/updatePriority/${id}`, { direction });
+        showAlert('Prioridad actualizada correctamente.');
+        fetchData(); // Refrescar la lista de avisos
+    } catch (error) {
+        console.error('Error al actualizar la prioridad:', error);
+        showAlert('Error al actualizar la prioridad. Por favor, inténtalo de nuevo.');
+    }
+}
+
 async function fetchData() {
     try {
         const responseNotices = await axios.get('/UnAcceptedNotices');
@@ -77,7 +99,11 @@ async function fetchBadgeCount(id_notice) {
     }
 }
 
+
+
+
 function generateNoticesTableHTML(notices) {
+    console.log('Notices:', notices); // Verifica los datos
     return `
         ${notices.map((item) => `
             <tr>
@@ -90,6 +116,8 @@ function generateNoticesTableHTML(notices) {
                         <input type="password" class="form-control mb-2" placeholder="Contraseña" required name="pass" id="pass-${item.id}">
                         <button type="submit" class="btn btn-secondary rounded-2">Aceptar</button>
                     </form>
+                    <button class="btn btn-primary btn-sm priority-up" data-id="${item.id}">Mover al Inicio</button>
+                    <button class="btn btn-danger btn-sm priority-down" data-id="${item.id}">Mover al Final</button>
                 </td>
             </tr>
         `).join('')}
@@ -125,5 +153,7 @@ function injectAcceptedTableIntoHTML(tableHTML) {
     const tableBody = document.getElementById('acceptedNoticesTableBody');
     tableBody.innerHTML = tableHTML;
 }
+
+
 
 fetchData();

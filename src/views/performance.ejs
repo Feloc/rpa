@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rendimiento de Técnicos y Equipos</title>
+    <title>Técnicos y Equipos</title>
     <%- include('partials/head') %>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <%- include('partials/navigation') %>
     <div class="container">
-        <h1>Rendimiento de Técnicos y Equipos</h1>
+        <h1>Técnicos y Equipos</h1>
 
         <!-- Formulario de Filtro por Rango de Tiempo -->
         <form id="filterForm" class="mb-3">
@@ -28,7 +28,7 @@
         </form>
 
         <!-- Gráfico de Técnicos -->
-        <h2>Rendimiento de Técnicos</h2>
+        <h2>Técnicos</h2>
         <canvas id="performanceChart"></canvas>
 
         <!-- Tabla de Técnicos -->
@@ -36,7 +36,6 @@
             <thead>
                 <tr>
                     <th>Técnico</th>
-                    <th>Ubicación</th>
                     <th>Número de Avisos</th>
                     <th>Tiempo Total (minutos)</th>
                 </tr>
@@ -189,7 +188,7 @@
             //console.log(data);
             
 
-            const labels = data.map(item => `${item.technician} (${item.location})`);
+            const labels = data.map(item => item.technician);
             const numNotices = data.map(item => item.numNotices);
             const totalTime = data.map(item => item.totalTime);
 
@@ -236,7 +235,6 @@
             tableBody.innerHTML = data.map(item => `
                 <tr>
                     <td>${item.technician}</td>
-                    <td>${item.location}</td>
                     <td>${item.numNotices}</td>
                     <td>${item.totalTime}</td>
                 </tr>

@@ -223,6 +223,38 @@ export const createNotice = async (req, res) => {
     
 }
 
+export const updatePriority = async (req, res) => {
+    const { id } = req.params;
+    const { direction } = req.body;
+    console.log(direction);
+    
+
+    try {
+        // Obtener la prioridad actual
+        const result = await poolPC
+            .request()
+            .input('id', sql.Int, id)
+            .query(`SELECT priority FROM notices WHERE id = @id`);
+
+        const currentPriority = result.recordset[0].priority || 0;
+
+        // Incrementar o disminuir la prioridad
+        const newPriority = direction === 'up' ? currentPriority + 1 : currentPriority - 1;
+
+        // Actualizar la prioridad
+        await poolPC
+            .request()
+            .input('id', sql.Int, id)
+            .input('priority', sql.Int, newPriority)
+            .query(`UPDATE notices SET priority = @priority WHERE id = @id`);
+
+        res.status(200).json({ message: 'Prioridad actualizada.' });
+    } catch (error) {
+        console.error('Error al actualizar prioridad:', error);
+        res.status(500).send('Error al actualizar prioridad.');
+    }
+};
+
 
 //Consider using libraries like mssql/promise for a more streamlined asynchronous handling of database queries.
 //Prepared Statements (Optional):
@@ -347,21 +379,26 @@ export const closeNotice = async (req, res) => {
         console.log('Filtered Result:', noticeUserFilter);
         
         // Obtener la última entrada sin endtime
-        const lastNoticeUser = noticeUserFilter[noticeUserFilter.length - 1];
-        console.log('Last Notice User:', lastNoticeUser);
+        //const lastNoticeUser = noticeUserFilter[noticeUserFilter.length - 1];
+        //console.log('Last Notice User:', lastNoticeUser);
 
-        if (lastNoticeUser) {
-            await poolPC
-                .request()
-                .input('endtime', sql.DateTime, endtime)
-                .input('id_user', sql.Int, lastNoticeUser.user_id)
-                .input('id', sql.Int, lastNoticeUser.id_notices_user)
-                .query(queries.updateNoticesUser);
-
-            await poolPC
-                .request()
-                .input('id', sql.Int, lastNoticeUser.user_id)
-                .query(queries.updateUsersAll);
+        if (noticeUserFilter) {
+            for (const item of noticeUserFilter) {
+                await poolPC
+                    .request()
+                    .input('endtime', sql.DateTime, endtime)
+                    .input('id_user', sql.Int, item.user_id)
+                    .input('id', sql.Int, item.id_notices_user) // Usamos el ID específico de notices_user
+                    .query(queries.updateNoticesUser);
+    
+                // Actualizar otros datos relacionados si es necesario
+                await poolPC
+                    .request()
+                    .input('id', sql.Int, item.user_id)
+                    .query(queries.updateUsersAll);
+    
+                console.log(`Updated notices_user ID: ${item.id_notices_user}, User ID: ${item.user_id}`);
+            }
         }
 
         //const noticeUserFilter = result.recordset.filter(item => (item.id == id_notice && item.endtime === null))
@@ -614,7 +651,7 @@ export const noticesHistory = [
                 request.input(key, value);
             });
 
-            const result = await request.query(query);
+            const result = await request.query(query += ' ORDER BY endtime desc');
 
             // Formatear fechas para el formulario
             const formattedStartDate = startDate ? format(parseISO(startDate), 'yyyy-MM-dd') : '';

@@ -28,10 +28,10 @@ export const queries =  {
 
     getEquipment:'SELECT area, id, name FROM equipment ORDER BY area, name',
     getNotices: 'SELECT * FROM notices',
-    getUnAcceptedNotices: 'SELECT id, machine, message, regtime, location FROM notices WHERE status = 1',
+    getUnAcceptedNotices: 'SELECT id, machine, message, regtime, location, priority FROM notices WHERE status = 1 ORDER BY priority desc',
     getAcceptedNotices:'SELECT * FROM notices WHERE status = 2',
     //getNoticesHistory: 'SELECT * FROM notices WHERE status = 3',
-    getNoticesHistory: `SELECT id, machine, message, regtime, starttime, endtime, technician FROM notices WHERE status = 3 ORDER BY endtime desc`,
+    getNoticesHistory: `SELECT id, machine, message, regtime, starttime, endtime, technician FROM notices WHERE status = 3`,
     getNoticeById: 'SELECT * FROM notices WHERE id = @id',
     createNotice: 'INSERT INTO notices(status, machine, message, detail, regtime, requester, location) VALUES (@status, @machine, @message, @detail, @regtime, @requester, @location)',
     updateNotice: 'UPDATE notices SET status = @status, starttime = @starttime, technician = @technician WHERE id = @id',

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { acceptNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getAcceptedNotices, getImages, getNotices, getNoticesByCategory, getUnAcceptedNotices, getUsers, index, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, renderRegisterNoticePage, updateNotice, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
+import { acceptNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getAcceptedNotices, getImages, getNotices, getNoticesByCategory, getUnAcceptedNotices, getUsers, index, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, renderRegisterNoticePage, updateNotice, updatePriority, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
 import multer from 'multer';
 import path from "path";
 import sharp from 'sharp';
@@ -72,7 +72,7 @@ router.get('/noticesUser_User/:id_notice', noticesUser_User)
 router.get('/acceptedNotices', getAcceptedNotices)
 router.get('/unAcceptedNotices', getUnAcceptedNotices)
 
-
+router.post('/updatePriority/:id', updatePriority)
 
 router.post('/upload', upload.single('image'), uploadImages)
 router.get('/getImages/:id_notice', getImages)
