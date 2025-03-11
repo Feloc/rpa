@@ -44,7 +44,7 @@ axios.interceptors.response.use(
     }
 );
 
-document.addEventListener('click', (event) => {
+/* document.addEventListener('click', (event) => {
     if (event.target.matches('.priority-up')) {
         const id = event.target.dataset.id;
         updatePriority(id, 'up');
@@ -52,7 +52,19 @@ document.addEventListener('click', (event) => {
         const id = event.target.dataset.id;
         updatePriority(id, 'down');
     }
+}); */
+
+document.addEventListener('click', (event) => {
+    if (event.target.closest('.priority-up')) {
+        const id = event.target.closest('.priority-up').dataset.id;
+        updatePriority(id, 'up');
+    }
+    if (event.target.closest('.priority-down')) {
+        const id = event.target.closest('.priority-down').dataset.id;
+        updatePriority(id, 'down');
+    }
 });
+
 
 
 async function updatePriority(id, direction) {
@@ -112,17 +124,29 @@ function generateNoticesTableHTML(notices) {
                 <td>${item.message}</td>
                 <td>${item.regtime ? new Date(item.regtime).toLocaleString() : ''}</td>
                 <td>
-                    <form id="acceptForm${item.id}" action="/acceptNotice/${item.id}" method="post">
-                        <input type="password" class="form-control mb-2" placeholder="Contraseña" required name="pass" id="pass-${item.id}">
-                        <button type="submit" class="btn btn-secondary rounded-2">Aceptar</button>
-                    </form>
-                    <button class="btn btn-primary btn-sm priority-up" data-id="${item.id}">Mover al Inicio</button>
-                    <button class="btn btn-danger btn-sm priority-down" data-id="${item.id}">Mover al Final</button>
+                    <div class="d-flex align-items-center gap-2">
+                        <!-- Input de contraseña y botón "Aceptar" -->
+                        <form id="acceptForm${item.id}" action="/acceptNotice/${item.id}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="password" class="form-control" placeholder="Contraseña" required name="pass" id="pass-${item.id}">
+                            <button type="submit" class="btn btn-secondary">
+                                Aceptar
+                            </button>
+                        </form>
+                        
+                        <!-- Botones de prioridad con íconos -->
+                        <button class="btn btn-primary btn-sm priority-up" data-id="${item.id}" title="Mover al Inicio">
+                            <i class="fas fa-arrow-up"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm priority-down" data-id="${item.id}" title="Mover al Final">
+                            <i class="fas fa-arrow-down"></i>
+                        </button>
+                    </div>
                 </td>
             </tr>
         `).join('')}
     `;
 }
+
 
 function generateAcceptedTableHTML(acceptedNotices, badges) {
     return `
@@ -134,15 +158,21 @@ function generateAcceptedTableHTML(acceptedNotices, badges) {
                 <td>${item.regtime ? new Date(item.regtime).toLocaleString() : ''}</td>
                 <td>${item.technician}</td>
                 <td>
-                    <form id="addUserNoticeForm${item.id}" action="/addUserNotice/${item.id}" method="post">
-                        <input type="password" class="form-control" placeholder="+" required name="pass" id="pass-${item.id}">
-                        <button type="submit" class="btn btn-secondary rounded-2"> + <span class="badge text-bg-warning">${badges[index]}</span></button>
-                    </form>
+                    <div class="d-flex align-items-center gap-2">
+                        <form id="addUserNoticeForm${item.id}" action="/addUserNotice/${item.id}" method="post" class="d-flex align-items-center gap-2">
+                            <input type="password" class="form-control" placeholder="+" required name="pass" id="pass-${item.id}">
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fas fa-user-plus"></i>
+                                <span class="badge text-bg-warning">${badges[index]}</span>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
         `).join('')}
     `;
 }
+
 
 function injectNoticesTableIntoHTML(tableHTML) {
     const tableBody = document.getElementById('noticesTableBody');
