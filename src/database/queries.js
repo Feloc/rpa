@@ -37,7 +37,7 @@ export const queries =  {
     updateNotice: 'UPDATE notices SET status = @status, starttime = @starttime, technician = @technician WHERE id = @id',
     updateNoticeDescription: 'UPDATE notices SET description = @description WHERE id = @id',
     updateNoticeClosed: 'UPDATE notices SET status = @status, endtime = @endtime, class = @class, stopped = @stopped WHERE id = @id',
-    getNoticesByCategory: 'SELECT id, machine, message, regtime, location, status FROM notices WHERE location = @location ',
+    getNoticesByCategory: 'SELECT id, machine, message, regtime, location, status FROM notices WHERE location = @location ORDER BY priority desc',
 
     //NoticeUser
     insertNoticeUser: 'INSERT INTO notices_user(id_user, id_notice, starttime) VALUES (@id_user, @id_notice, @starttime)',

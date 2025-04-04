@@ -18,7 +18,7 @@ async function updatePriority(id, direction) {
         console.log(`Actualizando prioridad para ID: ${id}, Dirección: ${direction}`);
         await axios.post(`/updatePriority/${id}`, { direction });
         showAlert('Prioridad actualizada correctamente.');
-        fetchPlantNotices(); // Refrescar la tabla después de actualizar
+        fetchSstNotices(); // Refrescar la tabla después de actualizar
     } catch (error) {
         console.error('Error al actualizar la prioridad:', error);
         showAlert('Error al actualizar la prioridad. Por favor, inténtalo de nuevo.');
@@ -49,13 +49,13 @@ function showAlert(message) {
     }, 2000);
 }
 
-// Función para obtener los avisos de planta
-async function fetchPlantNotices() {
+// Función para obtener los avisos de SST
+async function fetchSstNotices() {
     try {
-        const response = await axios.get('/notices/planta');
+        const response = await axios.get('/notices/sst');
         const notices = response.data.filter(item => item.status === 1); // Filtrar solo los avisos no aceptados
 
-        const tableBody = document.getElementById('plantNoticesTableBody');
+        const tableBody = document.getElementById('sstNoticesTableBody');
         tableBody.innerHTML = notices.map(item => `
             <tr>
                 <td><a href="/noticesDetail/${item.id}" class="btn btn-secondary rounded-2">${item.id}</a></td>
@@ -82,41 +82,9 @@ async function fetchPlantNotices() {
             </tr>
         `).join('');
     } catch (error) {
-        console.error('Error al obtener los avisos de plant:', error);
+        console.error('Error al obtener los avisos de SST:', error);
     }
 }
 
 // Llamada inicial para cargar los avisos
-fetchPlantNotices();
-
-/* import axios from 'https://cdn.skypack.dev/axios';
-
-async function fetchPlantNotices() {
-    try {
-        const response = await axios.get('/notices/planta');
-        const notices = response.data.filter(item => item.status === 1); // Filtrar solo los avisos no aceptados
-
-        const tableBody = document.getElementById('plantNoticesTableBody');
-        tableBody.innerHTML = notices.map(item => `
-            <tr>
-                <td><a href="/noticesDetail/${item.id}" class="btn btn-secondary rounded-2">${item.id}</a></td>
-                <td>${item.machine}</td>
-                <td>${item.message}</td>
-                <td>${item.regtime ? new Date(item.regtime).toLocaleString() : ''}</td>
-                <td>${item.technician}</td>
-                <td>${item.notice_desc}</td>
-                <td>
-                    <form id="acceptForm${item.id}" action="/acceptNotice/${item.id}" method="post">
-                        <input type="password" class="form-control mb-2" placeholder="Contraseña" required name="pass" id="pass-${item.id}">
-                        <button type="submit" class="btn btn-secondary rounded-2">Aceptar</button>
-                    </form>
-                </td>
-            </tr>
-        `).join('');
-    } catch (error) {
-        console.error('Error al obtener los avisos de plant:', error);
-    }
-}
-
-fetchPlantNotices();
- */
+fetchSstNotices();

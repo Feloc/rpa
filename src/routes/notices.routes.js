@@ -40,6 +40,10 @@ router.get('/viewPlantNotices', (req, res) => {
     res.render('viewPlantNotices');
 });
 
+router.get('/viewSstNotices', (req, res) => {
+    res.render('viewSstNotices');
+});
+
 /*router.post('/createNotice', createNotice);
 router.get('/notices', getNotices);
 router.get('/acceptedNotices', getAcceptedNotices);
