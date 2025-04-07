@@ -151,8 +151,12 @@ export const queries =  {
             AND starttime >= @startDate 
             AND endtime <= @endDate
         GROUP BY machine
-    `
+    `,
 
+    //Alerts
+    createAlert: `INSERT INTO alerts (name, startDate, startTime, period, hours, message) VALUES (@name, @startDate, @startTime, @period, @hours, @message)`,
+    getAlerts: 'SELECT * FROM alerts',
+    
 }
 
 //Verify the content of queries.getUsers to ensure it's a valid SQL query for your use case. Consider using parameterized queries to prevent SQL injection vulnerabilities.

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Alertas</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/navigation') %>
+    <div class="container">
+        <h1>Registro de Alertas</h1>
+        <form id="alertForm" action="/registerAlert" method="POST">
+            <div class="mb-3">
+                <label for="name" class="form-label">Nombre de la Alerta</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="startDate" class="form-label">Fecha de Inicio</label>
+                <input type="date" class="form-control" id="startDate" name="startDate" required>
+            </div>
+            <div class="mb-3">
+                <label for="startTime" class="form-label">Hora del Día</label>
+                <input type="time" class="form-control" id="startTime" name="startTime" required>
+            </div>
+            <div class="mb-3">
+                <label for="period" class="form-label">Periodo</label>
+                <select class="form-select" id="period" name="period" required>
+                    <option value="daily">Diario</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensual</option>
+                    <option value="hours">Cada tantas horas</option>
+                </select>
+                <input type="number" class="form-control mt-2" id="hoursInput" name="hours" placeholder="Ingrese horas (solo si eligió tantas horas)">
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label">Mensaje</label>
+                <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Registrar Alerta</button>
+        </form>
+        <hr>
+        <h2>Alertas Registradas</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Fecha de Inicio</th>
+                        <th>Hora</th>
+                        <th>Periodo</th>
+                        <th>Mensaje</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="alertsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <%- include('partials/footer') %>
+    <%- include('partials/scripts') %>
+    <script src="/alerts.js" type="module"></script>
+</body>
+</html>

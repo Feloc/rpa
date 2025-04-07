@@ -10,6 +10,7 @@ import config from "./config.js";
 import { connectPoolPC } from "./database/index.js";
 import noticesRoutes from './routes/notices.routes.js';
 import performanceRoutes from './routes/performance.routes.js'
+import alertRoutes from './routes/alerts.routes.js'
 import rpa_bot from './telegram/bot.js';
 
 const app = express();
@@ -31,6 +32,7 @@ app.use(express.urlencoded({ extended: false })); // Para recibir datos desde fo
 // Rutas
 app.use(noticesRoutes);
 app.use(performanceRoutes)
+app.use(alertRoutes)
 
 // Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));

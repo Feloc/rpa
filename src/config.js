@@ -13,5 +13,6 @@ export default {
 
     //telegram
     token: process.env.TOKEN || '',
+    chat_id: process.env.CHAT_ID,
     baseUrl: 'http://localhost:5000'
 }
