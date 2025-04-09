@@ -90,9 +90,101 @@ function combineDateAndTime(date, time) {
     );
 }
 
-
-
 cron.schedule('* * * * *', async () => { // Ejecutar cada minuto
+    const now = new Date();
+    console.log('Cron ejecutado en:', now);
+
+    // Obtener las alertas desde la base de datos
+    const alerts = await poolPC.request().query('SELECT * FROM alerts');
+    console.log('Alertas obtenidas:', alerts.recordset);
+
+    alerts.recordset.forEach(async (alert) => {
+        console.log('Start Date:', alert.startDate);
+        console.log('Start Time:', alert.startTime);
+        console.log('Last Triggered:', alert.lastTriggered);
+
+        let hour = alert.startTime.getHours()
+        console.log(hour);
+        
+        hour = hour + 5
+        alert.startTime.setHours(hour)
+
+        let formattedStartDate;
+        let formattedStartTime;
+
+        // Manejar startDate como objeto o cadena
+        if (alert.startDate instanceof Date) {
+            formattedStartDate = alert.startDate.toISOString().split('T')[0];
+        } else {
+            formattedStartDate = alert.startDate;
+        }
+
+        // Manejar startTime como objeto o cadena
+        if (alert.startTime instanceof Date) {
+            formattedStartTime = alert.startTime.toTimeString().split(' ')[0];
+        } else {
+            formattedStartTime = alert.startTime;
+        }
+
+        // Combinar startDate y startTime
+        const alertDateTime = combineDateAndTime(formattedStartDate, formattedStartTime);
+        console.log('Fecha y hora combinadas:', alertDateTime);
+
+        if (isNaN(alertDateTime.getTime())) {
+            console.error('Fecha y hora inválidas:', { date: alert.startDate, time: alert.startTime });
+            return;
+        }
+
+        // Si la alerta ya se disparó, calcula el próximo disparo
+
+        if (alert.lastTriggered) {
+            let lastTriggeredHour = alert.lastTriggered.getHours()
+            lastTriggeredHour = lastTriggeredHour + 5
+            alert.lastTriggered.setHours(lastTriggeredHour)
+        }
+        
+        const lastTriggered = alert.lastTriggered ? new Date(alert.lastTriggered) : null;
+        let nextTriggerTime = alertDateTime;
+
+        if (lastTriggered) {
+            switch (alert.period) {
+                case 'daily':
+                    nextTriggerTime.setDate(lastTriggered.getDate() + 1);
+                    break;
+                case 'weekly':
+                    nextTriggerTime.setDate(lastTriggered.getDate() + 7);
+                    break;
+                case 'monthly':
+                    nextTriggerTime.setMonth(lastTriggered.getMonth() + 1);
+                    break;
+                case 'hours':
+                    nextTriggerTime = new Date(lastTriggered.getTime() + (alert.hours * 60 * 60 * 1000));
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        console.log('Próximo disparo calculado:', nextTriggerTime);
+
+        // Evaluar si la alerta debe dispararse
+        const shouldTrigger = now >= nextTriggerTime;
+
+        if (shouldTrigger) {
+            console.log('Alerta activada:', alert);
+
+            // Enviar notificaciones
+            await sendTelegramMessage(alert.message);
+            //showBrowserNotification(alert.message);
+
+            // Actualizar la última vez que se disparó
+            await poolPC.request()
+                .query(`UPDATE alerts SET lastTriggered = GETDATE() WHERE id = ${alert.id}`);
+        }
+    });
+});
+
+/* cron.schedule('* * * * *', async () => { // Ejecutar cada minuto
     const now = new Date();
     console.log('Cron ejecutado en:', now);
 
@@ -179,7 +271,7 @@ cron.schedule('* * * * *', async () => { // Ejecutar cada minuto
             //showBrowserNotification(alert.message); // Mostrar notificación en el navegador
         }
     });
-});
+}); */
 
 // Función para enviar mensaje por Telegram
 async function sendTelegramMessage(message) {
