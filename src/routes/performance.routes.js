@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { getAvailabilityData, getEquipmentData, getEquipmentDataByClass, getFilteredEquipmentData, getFilteredEquipmentDataByClass, getFilteredPerformanceData, getMTBFData, getMTTRData, getPerformanceData, renderPerformancePage } from "../controllers/performance.controllers.js";
+import { isAuthenticated, restrictUserAccess } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
@@ -15,6 +16,6 @@ router.get('/performance/mttr', getMTTRData);
 router.get('/performance/availability', getAvailabilityData);
 
 // Ruta para renderizar la página de rendimiento
-router.get('/performance', renderPerformancePage);
+router.get('/performance',isAuthenticated, restrictUserAccess, renderPerformancePage);
 
 export default router;

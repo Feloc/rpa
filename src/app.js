@@ -11,7 +11,11 @@ import { connectPoolPC } from "./database/index.js";
 import noticesRoutes from './routes/notices.routes.js';
 import performanceRoutes from './routes/performance.routes.js'
 import alertRoutes from './routes/alerts.routes.js'
+import authRoutes from "./routes/auth.routes.js";
 import rpa_bot from './telegram/bot.js';
+import { isAuthenticated } from "./middleware/auth.middleware.js";
+import cookieParser from 'cookie-parser';
+
 
 const app = express();
 const server = http.createServer(app); 
@@ -25,6 +29,9 @@ app.set('views', path.join(__dirname, 'views')); // Configuración del directori
 app.set('view engine', 'ejs'); // Configuración del motor de vistas
 app.set('port', config.port); // Configuración del puerto
 
+// Configurar cookie-parser
+app.use(cookieParser());
+
 // Middleware
 app.use(express.json()); // Para recibir datos en formato JSON
 app.use(express.urlencoded({ extended: false })); // Para recibir datos desde formularios HTML
@@ -33,6 +40,7 @@ app.use(express.urlencoded({ extended: false })); // Para recibir datos desde fo
 app.use(noticesRoutes);
 app.use(performanceRoutes)
 app.use(alertRoutes)
+app.use(authRoutes)
 
 // Archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
@@ -61,6 +69,9 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');
 });
+
+
+
 
 console.log(path.join(__dirname, 'views'));
 console.log(__dirname);

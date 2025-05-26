@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { deleteAlert, getAlerts, registerAlert } from "../controllers/alerts.controllers.js"
+import { isAuthenticated, restrictUserAccess } from "../middleware/auth.middleware.js";
 
 const router = Router();
 
 
-router.get('/viewAlerts', (req, res) => {
+router.get('/viewAlerts', isAuthenticated, restrictUserAccess, (req, res) => {
     res.render('viewAlerts')
 })
 

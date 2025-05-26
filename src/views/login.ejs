@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+    <!-- Barra de navegación solo con logo -->
+    <nav class="navbar navbar-dark bg-dark mb-3">
+        <div class="container d-flex justify-content-center">
+            <a class="navbar-brand" href="/">
+                <img src="/img/logo_ld.png" alt="" class="w-50">
+            </a>
+        </div>
+    </nav>
+
+    <!-- Contenedor del formulario centrado -->
+    <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
+        <div class="card p-4 shadow-lg" style="width: 400px;">
+            <h2 class="text-center">Iniciar Sesión</h2>
+            <form action="/login" method="POST">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+            </form>
+            <p class="text-center mt-3">¿No tienes una cuenta? Contacta al administrador.<!-- <a href="/register">Regístrate aquí</a></p> -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <%- include('partials/scripts') %>
+
+</body>
+</html>

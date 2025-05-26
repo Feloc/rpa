@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { acceptNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getAcceptedNotices, getImages, getNotices, getNoticesByCategory, getUnAcceptedNotices, getUsers, index, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, renderRegisterNoticePage, updateNotice, updatePriority, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
+import { acceptNotice, acceptReviewNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getAcceptedNotices, getImages, getNotices, getNoticesByCategory, getUnAcceptedNotices, getUsers, index, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, rejectReviewNotice, renderRegisterNoticePage, renderReviewPage, updateNotice, updatePriority, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
 import multer from 'multer';
 import path from "path";
 import sharp from 'sharp';
+import { isAuthenticated, restrictUserAccess } from "../middleware/auth.middleware.js";
 
 
 
@@ -21,28 +22,29 @@ const upload = multer({storage:multer.memoryStorage()})
 
 const router = Router()
 
-router.get('/', index)
 
 
+router.get('/registerNotice', isAuthenticated ,renderRegisterNoticePage);
 
-
-router.get('/registerNotice', renderRegisterNoticePage);
-
-router.get('/viewNotices', (req, res) => {
+router.get('/viewNotices', isAuthenticated, restrictUserAccess, (req, res) => {
     res.render('viewNotices');
 });
 
-router.get('/viewWorkshopNotices', (req, res) => {
+router.get('/viewWorkshopNotices', isAuthenticated, restrictUserAccess, (req, res) => {
     res.render('viewWorkshopNotices');
 });
 
-router.get('/viewPlantNotices', (req, res) => {
+router.get('/viewPlantNotices', isAuthenticated, (req, res) => {
     res.render('viewPlantNotices');
 });
 
-router.get('/viewSstNotices', (req, res) => {
+router.get('/viewSstNotices', isAuthenticated, (req, res) => {
     res.render('viewSstNotices');
 });
+
+router.get('/review', isAuthenticated, restrictUserAccess, renderReviewPage); // Página de revisión
+router.post('/acceptReviewNotice/:id', isAuthenticated, acceptReviewNotice); // Aceptar aviso
+router.post('/rejectReviewNotice/:id', isAuthenticated, rejectReviewNotice); // Rechazar aviso
 
 /*router.post('/createNotice', createNotice);
 router.get('/notices', getNotices);
@@ -69,7 +71,7 @@ router.post('/closeNotice/:id_notice', closeNotice)
 router.post('/updateNotice/:id_notice', updateNotice)
 router.post('/addUserNotice/:id_notice', addUserNotice)
 router.post('/exitUserNotice', exitUserNotice) //parametos recibidos como req.query
-router.get('/noticesHistory', noticesHistory)
+router.get('/noticesHistory', isAuthenticated, restrictUserAccess, noticesHistory)
 router.get('/noticesUser_User/:id_notice', noticesUser_User)
 
 

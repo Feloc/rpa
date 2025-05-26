@@ -17,23 +17,23 @@ const __dirname = path.dirname(__filename)
 
 
 export const index = (req, res)=>{
-    res.render('index',{title : "RAP"})
+    res.render('index',{title : "RPA"})
 }
-
 
 export const renderRegisterNoticePage = async (req, res) => {
     try {
+        console.log('Usuario autenticado:', req.user); // Verifica si req.user contiene la información del usuario
+
         const pool = await poolPC;
         const result = await pool.request().query(queries.getEquipment);
         const data = result.recordset;
 
-        res.render('registerNotice', { data });
+        res.render('registerNotice', { data, user: req.user }); // Asegúrate de enviar req.user a la vista
     } catch (error) {
         console.error('Error al obtener la lista de equipos:', error);
         res.status(500).send('Error al obtener la lista de equipos');
     }
 };
-
 
 
 
@@ -673,6 +673,44 @@ export const noticesHistory = [
 ];
 
 
+//REVIEW-----------------------
+export const renderReviewPage = async (req, res) => {
+    try {
+        const result = await poolPC.request().query('SELECT * FROM notices WHERE status = 3');
+        const data = result.recordset;
+        res.render('review', { data });
+    } catch (error) {
+        console.error('Error al obtener avisos en revisión:', error);
+        res.status(500).send('Error interno');
+    }
+};
+
+export const acceptReviewNotice = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await poolPC.request()
+            .input('id', id)
+            .query('UPDATE notices SET status = 4 WHERE id = @id'); // Cambia a historial
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error al aceptar aviso:', error);
+        res.status(500).send('Error interno');
+    }
+};
+
+export const rejectReviewNotice = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await poolPC.request()
+            .input('id', id)
+            .query('UPDATE notices SET status = 2 WHERE id = @id'); // Devuelve el aviso a estado 2
+        res.sendStatus(200);
+    } catch (error) {
+        console.error('Error al rechazar aviso:', error);
+        res.status(500).send('Error interno');
+    }
+};
+ 
 /* export const noticesHistory = [
 
     //validacion

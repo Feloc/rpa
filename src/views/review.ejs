@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revisión de Avisos</title>
+    <%- include('partials/head') %>
+</head>
+<body>
+
+    <%- include('partials/navigation') %>   
+
+    <div class="container mt-4">
+        <h2 class="text-center">Revisión de Avisos</h2>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Máquina</th>
+                    <th>Mensaje</th>
+                    <th>Técnico</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% data.forEach(notice => { %>
+                <tr>
+                    <td> <a href="/noticesDetail/<%=notice.id%>" class="btn btn-secondary rounded-2"> <%=notice.id%></a> </td>
+                    <td><%= notice.machine %></td>
+                    <td><%= notice.message %></td>
+                    <td><%= notice.technician %></td>
+                    <td>
+                        <button class="btn btn-success accept-btn" data-id="<%= notice.id %>">Aceptar</button>
+                        <button class="btn btn-danger reject-btn" data-id="<%= notice.id %>">Rechazar</button>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.querySelectorAll('.accept-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-id');
+                await fetch(`/acceptReviewNotice/${id}`, { method: 'POST' });
+                window.location.reload();
+            });
+        });
+
+        document.querySelectorAll('.reject-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const id = button.getAttribute('data-id');
+                await fetch(`/rejectReviewNotice/${id}`, { method: 'POST' });
+                window.location.reload();
+            });
+        });
+    </script>
+
+</body>
+</html>
