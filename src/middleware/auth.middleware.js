@@ -22,10 +22,10 @@ export const isAuthenticated = async (req, res, next) => {
 
         if (result.recordset.length > 0) {
             req.user.credential = result.recordset[0].credential; // Guardamos la credencial
-        } else {
+        } /* else {
             console.error("No se encontró la credencial del usuario.");
             return res.redirect('/login');
-        }
+        } */
 
         next();
     } catch (error) {
@@ -65,11 +65,16 @@ export const restrictUserAccess = (req, res, next) => {
     // Usuarios con credential 2 (manager) solo pueden acceder a Reportes
     const restrictedPages = ['/viewWorkshopNotices', '/viewAlerts'];
     const restrictedPagesSupervisor = ['/viewNotices', '/viewWorkshopNotices', '/viewAlerts', '/noticesHistory', '/performance'];
+    const restrictedPagesTaller = ['/review', '/viewAlerts', '/performance'];
     if (req.user.credential === 2 && restrictedPages.includes(req.originalUrl)) {
         console.log(`Acceso denegado: ${req.user.email} no puede acceder a ${req.originalUrl}`);
         return res.redirect('/');
     }
     if (req.user.credential === 3 && restrictedPagesSupervisor.includes(req.originalUrl)) {
+        console.log(`Acceso denegado: ${req.user.email} no puede acceder a ${req.originalUrl}`);
+        return res.redirect('/');
+    }
+    if (req.user.credential === 5 && restrictedPagesTaller.includes(req.originalUrl)) {
         console.log(`Acceso denegado: ${req.user.email} no puede acceder a ${req.originalUrl}`);
         return res.redirect('/');
     }

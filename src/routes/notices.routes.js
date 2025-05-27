@@ -65,7 +65,7 @@ router.get('/putNoticeUser', putNoticeUser)
 
 
 router.get('/notices', notices)
-router.post('/createNotice', createNotice)
+router.post('/createNotice', isAuthenticated, createNotice)
 router.post('/acceptNotice/:id_notice', acceptNotice)
 router.post('/closeNotice/:id_notice', closeNotice)
 router.post('/updateNotice/:id_notice', updateNotice)

@@ -179,7 +179,7 @@ export const notices = async (req, res) => {
     } 
 }
 
-export const createNotice = async (req, res) => {
+/* export const createNotice = async (req, res) => {
 
     try {
         const {equipment, event, notice_desc, pass, location} = req.body
@@ -221,7 +221,50 @@ export const createNotice = async (req, res) => {
         res.status(500).send(error.message)
     }
     
-}
+} */
+
+export const createNotice = async (req, res) => {
+    try {
+        const { equipment, event, notice_desc, location } = req.body;
+        console.log('al createNotice',req.user);
+        
+
+        // Validar que haya un usuario autenticado
+        if (!req.user || !req.user.id) {
+            return res.status(401).send('Error: Usuario no autenticado.');
+        }
+
+        const status = 1;
+        const regtime = new Date();
+        const requester = req.user.id; // Tomamos el ID del usuario autenticado
+
+        console.log(`Aviso creado por usuario ID: ${requester}`);
+
+        await poolPC
+            .request()
+            .input('status', sql.Int, status)
+            .input('machine', sql.VarChar, equipment)
+            .input('message', sql.VarChar, event)
+            .input('detail', sql.Text, notice_desc)
+            .input('regtime', sql.DateTime, regtime)
+            .input('requester', sql.Int, requester) // Ahora usamos req.user.id
+            .input('location', sql.VarChar, location)
+            .query(queries.createNotice);
+
+        // Emitir evento de Socket.io
+        io.emit('newNotice', { equipment, event, notice_desc });
+
+        // Enviar mensaje a Telegram
+        const message = `Nuevo aviso registrado:\nEquipo: ${equipment}\nNovedad: ${event}\nDescripción: ${notice_desc}`;
+        await sendMessageToChat(message);
+
+        res.redirect('/viewNotices');
+
+    } catch (error) {
+        console.error('Error al crear aviso:', error);
+        res.status(500).send(error.message);
+    }
+};
 
 export const updatePriority = async (req, res) => {
     const { id } = req.params;
