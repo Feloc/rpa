@@ -258,7 +258,7 @@ export const createNotice = async (req, res) => {
         const message = `Nuevo aviso registrado:\nEquipo: ${equipment}\nNovedad: ${event}\nDescripción: ${notice_desc}`;
         await sendMessageToChat(message);
 
-        res.redirect('/viewNotices');
+        res.redirect('/viewPlantNotices');
 
     } catch (error) {
         console.error('Error al crear aviso:', error);
@@ -376,7 +376,7 @@ export const acceptNotice = async (req, res) => {
 
             //await poolPC.transaction().commit()
             console.log('Aviso aceptado correctamente')
-            res.redirect('/viewNotices')
+            res.redirect('/acceptedNoticesPage')
         } catch (error) {
             //await poolPC.transaction().rollback(); // Rollback on error
             console.error('Error updating notice and user:', error);
@@ -560,7 +560,7 @@ export const addUserNotice = async(req, res) => {
             .query(queries.insertNoticeUser)
 
             console.log('Usuario agregado correctamente')
-            res.redirect('/viewNotices')
+            res.redirect('/acceptedNoticesPage')
             } catch (error) {
                 console.error('Error adding user to notice:', error);
                 res.status(500).json({ error: 'Internal server error (addUser/notice update).' });
@@ -605,6 +605,19 @@ export const exitUserNotice = async (req, res) => {
     }
     
 }
+
+
+export const renderAcceptedNoticesPage = async (req, res) => {
+    try {
+        const result = await poolPC.request().query('SELECT * FROM notices WHERE status = 2');
+        const data = result.recordset;
+        res.render('acceptedNotices', { data });
+    } catch (error) {
+        console.error('Error al obtener avisos aceptados:', error);
+        res.status(500).send('Error interno');
+    }
+};
+
 
 
 export const noticesDetail = async (req, res) => {

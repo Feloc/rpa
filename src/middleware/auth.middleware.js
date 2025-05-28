@@ -64,7 +64,7 @@ export const restrictUserAccess = (req, res, next) => {
 
     // Usuarios con credential 2 (manager) solo pueden acceder a Reportes
     const restrictedPages = ['/viewWorkshopNotices', '/viewAlerts'];
-    const restrictedPagesSupervisor = ['/viewNotices', '/viewWorkshopNotices', '/viewAlerts', '/noticesHistory', '/performance'];
+    const restrictedPagesSupervisor = ['/viewNotices', '/viewWorkshopNotices', '/viewAlerts', /* '/noticesHistory' */, '/performance'];
     const restrictedPagesTaller = ['/review', '/viewAlerts', '/performance'];
     if (req.user.credential === 2 && restrictedPages.includes(req.originalUrl)) {
         console.log(`Acceso denegado: ${req.user.email} no puede acceder a ${req.originalUrl}`);

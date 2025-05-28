@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { acceptNotice, acceptReviewNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getAcceptedNotices, getImages, getNotices, getNoticesByCategory, getUnAcceptedNotices, getUsers, index, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, rejectReviewNotice, renderRegisterNoticePage, renderReviewPage, updateNotice, updatePriority, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
+import {acceptNotice, acceptReviewNotice, addUserNotice, closeNotice, createNotice, exitUserNotice, getAcceptedNotices, getImages, getNotices, getNoticesByCategory, getUnAcceptedNotices, getUsers, index, notices, noticesDetail, noticesHistory, noticesUser_User, putNoticeUser, rejectReviewNotice, renderAcceptedNoticesPage, renderRegisterNoticePage, renderReviewPage, updateNotice, updatePriority, updateUsers, uploadImages } from "../controllers/notices.controllers.js";
 import multer from 'multer';
 import path from "path";
 import sharp from 'sharp';
@@ -65,6 +65,17 @@ router.get('/putNoticeUser', putNoticeUser)
 
 
 router.get('/notices', notices)
+router.get('/acceptedNoticesPage', isAuthenticated, renderAcceptedNoticesPage)
+/* router.get('/api/acceptedNotices', isAuthenticated, async (req, res) => {
+    try {
+        const result = await poolPC.request().query('SELECT * FROM notices WHERE status = 2');
+        res.json(result.recordset);
+    } catch (error) {
+        console.error('Error al obtener avisos aceptados:', error);
+        res.status(500).json({ error: 'Error interno' });
+    }
+}); */
+
 router.post('/createNotice', isAuthenticated, createNotice)
 router.post('/acceptNotice/:id_notice', acceptNotice)
 router.post('/closeNotice/:id_notice', closeNotice)
